@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    function getNowTime (cutline) {
+        let date = new Date();
+        // console.log(date)
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let h = date.getHours();
+        let m = date.getMinutes();
+        let s = date.getSeconds();
+        if (month >= 1 && month <=9) {
+            month = '0' + month;
+        }
+        if (day >= 0 && day <= 9) {
+            day = '0' + day;
+        }
+        if (h >= 0 && h <= 9) {
+            h = '0' + h;
+        }
+        if (m >= 0 && m <= 9) {
+            m = '0' + m;
+        }
+        if (s >= 0 && s <= 9) {
+            s = '0' + s;
+        }
+        let Time = year + cutline + month + cutline + day + ' ' + h + ':' + m + ':' + s;
+        return Time;
+    }
+    console.log(getNowTime('-'));
+
+
+    // var a = 100;
+    // function test () {
+    //     console.log(a, '111');
+    //     a = 10;
+    //     console.log(a, '222');
+    // }
+    // test();
+    // console.log(a, '333');
+
+    // 预解析
+    var a;
+    function test () {
+        console.log(a, '111');
+        a = 10;
+        console.log(a, '222');
+    }
+    a = 100;
+    test();
+    console.log(a, '333');
+</script>
+</body>
+</html>

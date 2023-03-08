@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-on 事件绑定</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-on 事件绑定</h1>
+    <hr>
+    <div id="app">
+        本场比赛的分：{{score}}
+        <p>
+            <button v-on:click="add">加分</button>
+            <button @click="reduce">减分</button>
+        </p>
+        <!-- 键盘事件 -->
+        <input type="text" @keyup.enter="onEnter" v-model="count">
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                score: 0,
+                count: 1
+            },
+            methods: {
+                add () {
+                    this.score++
+                },
+                reduce () {
+                    this.score--
+                },
+                // 键盘 enter 事件
+                onEnter () {
+                    console.log('enter')
+                    this.score = this.score + parseInt(this.count)
+                }
+            },
+        })
+        
+    </script>
+</body>
+</html>

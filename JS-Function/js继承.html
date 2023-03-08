@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // function Parent () {}
+    // let child = new Parent()
+    // console.log(child.__proto__ === Parent.prototype)
+    
+    // JSON 数组去重
+    const uniqueJSON = (arr, key) => {
+      let result = [arr[0]]
+      console.log(result, 'result')
+      for (let i = 0; i < arr.length; i++) {
+          let item = arr[i]
+          let flag = false
+          for (let j = 0; j < result.length; j ++) {
+              if (item[key] == result[j][key]) {
+                  flag = true
+                  break;
+              }
+          }
+          if (!flag) result.push(item)
+      }
+      return result
+    }
+    let payList = [
+      {chnlNo: "现金", amount: 300, type: 2},
+      {chnlNo: "支付宝", amount: "100", type: 2},
+      {chnlNo: "银行卡", amount: "400", type: 2},
+      {chnlNo: "现金", amount: 200, type: 2}
+    ]
+    // console.log(payList)
+    console.log(uniqueJSON(payList, 'chnlNo'))
+
+    // 对象数组去重
+    function $unique (array) {
+        const obj = {}
+        return array.filter((item) => {
+            return obj.hasOwnProperty(typeof item + JSON.stringify(item)) ? false : (obj[typeof item + JSON.stringify(item)] = true)
+        })
+    }
+    let data = [
+      { id: 201801, name: '张三', age: 15, },
+      { id: 201804, name: 'John', age: 18, },
+      { id: 201802, name: '李四', age: 18, },
+      { id: 201801, name: '张三', age: 15, },
+      { id: 201805, name: 'Jack', age: 18, },
+      { id: 201803, name: '王五', age: 10, },
+      { id: 201805, name: 'Jack', age: 18, },
+      { id: 201804, name: 'John', age: 18, },
+      { id: 201805, name: 'Jack', age: 18, }
+    ];
+    console.log($unique(data));
+    console.log(uniqueJSON(data, 'id'))
+
+    // 数组去重，过滤掉 false undfined null "0" 0
+    const uniqueSpecial = arr => {
+      return arr.filter((val, index, selfArr) => {
+        return (!(!val || val === "0")) && (selfArr.indexOf(val) === index)
+      })
+    }
+    let arrS = [7, "ate", "0", undefined, false, true, 9, 7, 7, 7, 9, 9, 9, 10, false, true, undefined, null, NaN, NaN, {}, {}, 'a', 'a']
+    console.log(uniqueSpecial(arrS))
+
+    function uniq (arr) {
+        let newArr = [];
+        let flag = true;
+        for (let val of arr) {
+            console.log(val, 'val')
+            if (!newArr.includes(val)) {
+                if (val !== val) {
+                    if (flag) {
+                        newArr.push(val);
+                        flag = false;
+                    }
+                } else {
+                    newArr.push(val);
+                }
+            }
+        }
+        return newArr;
+    }
+    console.log(uniq([false, true, undefined, null, NaN, NaN, {}, {}, 'a', 'a']))
+    let arr = [1,[2,[3],[[4,5]]], 6, 7]
+
+    // ES10 flat() 方法
+    let arrFlat1 = arr.flat(Infinity);
+    console.log(arrFlat1) // [1, 2, 3, 4, 5, 6, 7]
+
+    // 利用正则表达式
+    // 先序列化
+    let strFlat = JSON.stringify(arr)
+    let arrFlat2 = strFlat.replace(/(\[|\])/g, '').split(',').map(Number)
+    // .map(Number) 方法可以将字符串数组变成数字数组
+    console.log(arrFlat2) // [1, 2, 3, 4, 5, 6, 7]
+  </script>
+</body>
+</html>

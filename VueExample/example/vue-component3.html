@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Component 组件 props 属性设置</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Component 组件 props 属性设置</h1>
+    <hr>
+    <div id="app">
+        <!-- {{message}} -->
+        <!-- <panda from-here="China"></panda> -->
+        
+        <!-- 在构造器里向组件中传值 -->
+        <panda :from-here="message"></panda>
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'China-----Hello World'
+            },
+            components: {
+                'panda': {
+                    template: `<div style="color: pink"> Panda from {{fromHere}}</div>`,
+                    props: ['fromHere'] // props 选项就是设置和获取标签上的属性值，是一个数组
+                }
+            }
+        })
+    </script>
+</body>
+</html>

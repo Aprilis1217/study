@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-if & v-else & v-show 指令</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-if & v-else & v-show 指令</h1>
+    <hr>
+    <div id="app">
+        <!-- 
+            v-if   是动态的向 DOM 树内添加或删除 DOM 元素，对于管理系统的权限列表的展示使用 v-if 来渲染
+            v-if 判断是否加载，可以减轻服务器的压力，在需要时加载，但有更高的切换开销
+            v-show 是通过设置 DOM 元素的 display 样式属性来控制显示和隐藏的，多数情况下我们建议使用 v-show 来渲染
+            v-show 元素总会被渲染，调整 DOM 元素的 CSS 的 display 属性，可以是客户端操作更流畅
+         -->
+        <div v-if="isLogin">你好，JSFeng</div>
+        <div v-else="isLogin">请登录！</div>
+        <div v-show="isLogin">true为显示，false为隐藏</div>
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                isLogin: true
+            }
+        })
+    </script>
+</body>
+</html>

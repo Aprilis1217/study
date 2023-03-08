@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Transition 过渡 & 动画</title>
+    <!-- 1. 引入过渡动画第三方库 -->
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <!-- 2. 定义类名 -->
+    <style>
+        /* 定义进入过渡 & 离开过渡的开始状态 */
+        .slide-enter, .slide-leave-to {
+            padding-left: 200px;
+        }
+        /* 定义过渡的状态 */
+        .slide-enter-active, .slide-leave-active {
+            transition: all 3s;
+        }
+        /* 定义进去 & 离开的结束状态 */
+        .slide-enter-to, .slide-leave {
+            padding-left: 0px;
+        }
+    </style>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Transition 过渡 & 动画</h1>
+    <!-- 
+        总结：不管是通过 animate.css 第三方库还是通过类 Class 来实现过渡动画效果，其本质都是在要过渡动画的元素上添加或删除类 Class
+     -->
+    <hr>
+    <div id="app">
+        <!-- 
+            1. 通过引入过渡动画第三方库，将要过渡的元素用 transition 标签包裹起来实现过渡动画
+         -->
+        <!-- 
+            enter-active-class  进入动画的状态
+            enter-active-class  离开动画的状态
+         -->
+        <transition enter-active-class="animated jello" leave-active-class="animated wobble">
+            <div v-show="isShow1" style="font-size: 20px">{{message}}</div>
+        </transition>
+        <p><button @click="isShow1 = !isShow1">1. 通过 animated.css 第三方库实现过渡动画</button></p>
+        <hr>
+        <transition name="slide">
+            <!-- 
+                2. 将要过渡的元素用 transition 标签包裹起来，然后给 transition 标签指定 name 属性，这个 name属性会作为类名的前缀
+             -->
+             <div v-show="isShow2" style="font-size: 20px">{{message}}</div>
+        </transition>
+        <p><button @click="isShow2 = !isShow2">2. 通过类 Class 来实现过渡动画</button></p>
+        <hr>
+        <!-- 
+            3. 通过 JavaScript 钩子函数来实现过渡动画
+         -->
+        <!-- 
+            v-on:before-enter="beforeEnter"  进入动画之前
+            v-on:enter="enter"               进入动画中
+            v-on:after-enter="afterEnter"    进入动画之后
+
+            v-on:before-leave="beforeLeave"  离开动画之前
+            v-on:leave="leave"               离开动画中
+            v-on:after-leave="afterLeave"    离开动画之后
+         -->
+        <transition 
+           @before-enter="beforeEnter"
+           @enter="enter"
+           @after-enter="afterEnter"
+
+           @before-leave="beforeLeave"
+           @leave="leave"
+           @after-leave="afterLeave"
+        >
+            <div v-show="isShow3" style="color: red; font-size: 20px">{{message}}</div>
+        </transition>
+        <p><button @click="isShow3 = !isShow3">3. 通过 JavaScript 钩子函数来实现过渡动画</button></p>
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World',
+                isShow1: true,
+                isShow2: true,
+                isShow3: true
+            },
+            methods: {
+                beforeEnter (el) { // el 参数表示的是要过渡动画的元素
+                    console.log('beforeEnter')
+                    el.style.color = 'green'
+                    el.style.paddingLeft = '100px'
+                },
+                // 当只用 JavaScript 过渡动画的时候， enter 和 leave 函数中必须使用 done 方法进行回调，否则它们江北同步调用，过渡会立即完成
+                enter (el, done) { 
+                    console.log('enter')
+                    let step = 1
+                    let interval = setInterval(() => {
+                        el.style.paddingLeft = (100 - step) + 'px'
+                        step++
+                        if (step === 100) {
+                            clearInterval()
+                            done()
+                        }
+                    }, 12)
+                }, 
+                afterEnter (el) {
+                    console.log('afterEnter')
+                    
+                }, 
+                beforeLeave (el) {
+                    console.log('beforeLeave')
+                    el.style.color = 'blue'
+                    el.style.paddingLeft = '0px'
+                }, 
+                leave (el, done) {
+                    console.log('leave')
+                    let step = 100
+                    let interval = setInterval(() => {
+                        el.style.paddingLeft = (step - 0) + 'px'
+                        step--
+                        if (step === 0) {
+                            clearInterval()
+                            done()
+                        }
+                    }, 17)
+                }, 
+                afterLeave (el) {
+                    console.log('afterLeave')
+                } 
+            },
+        })
+    </script>
+</body>
+</html>

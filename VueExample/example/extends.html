@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Extends Option 扩展选项</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Extend Option 扩展选项</h1>
+    <hr>
+    <div id="app">
+        <p>${message}</p>
+        <p>${num}</p>
+        <p><button @click="add">增加</button></p>
+    </div>
+
+    <script>
+        let extendsObj = {
+            updated() {
+                console.log('扩展出来的 updated 方法') // 扩展的 updated 方法后执行
+            },
+            methods: {
+                add () { // 扩展出来的方法和原生构造器的方法重名时不执行
+                    this.num++
+                    console.log('扩展出来的 add 方法') // 此扩展出来的 add 方法不执行
+
+                }
+            }
+        }
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World',
+                num: 1
+            },
+            methods: {
+                add () {
+                    this.num++
+                    console.log('原生的方法') // 最先执行
+                }  
+            },
+            updated() {
+                console.log('原生的 updated 方法') // 这个原生的 updated 最后执行
+            },
+            // 扩展
+            extends: extendsObj,
+            // delimiters 的作用是改变插值的符号，Vue 默认的插值是双大括号 {{}} 
+            delimiters: ['${', '}']
+        })
+    </script>
+</body>
+</html>

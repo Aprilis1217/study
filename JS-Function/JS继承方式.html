@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // JS 继承的六种方式
+        // 父类
+        function Person (name, age) {
+            this.name = name;
+            this.skill = 'Web 前端'
+            // this.sum = function (a, b) {
+            //     return a + b;
+            // }
+        }
+        Person.prototype.age = 18; // 给构造函数添加了原型属性
+        // 想要继承，就必须要提供个父类（继承谁，提供继承的属性）
+
+        // 方式一：原型链继承
+        function Student1 () {
+            this.name = 'Jack';
+        }
+        // 将 Student 的 prototype 对象指向 Person 的实例
+        Student1.prototype = new Person(); // 重点
+        // 注意点：将 Student 新的prototype对象加上constructor属性，并将这个属性指回原来的构造函数
+        Student1.prototype.constructor = Student1;
+        var student1 = new Student1();
+        console.log(student1.age, '原型链继承'); // 18
+        console.log(student1.name, '原型链继承'); // Jack
+        // instanceof 判断元素是否在另一个元素的原型链上
+        console.log(student1 instanceof Person); // true
+        /**
+         * 原型链继承
+         * 重点：让新实例的原型等于父类的实例.
+         * 特点：实例可继承的属性有：实例的构造函数的属性，父类构造函数属性，父类原型的属性。（新实例不会继承父类实例的属性！）
+         * 缺点：
+         * 1、新实例无法向父类构造函数传参。
+         * 2、继承单一。
+         * 3、所有新实例都会共享父类实例的属性。（原型上的属性是共享的，一个实例修改了原型属性，另一个实例的原型属性也会被修改！）
+        */
+
+        // 方式二：借用构造函数继承
+        function Student2 () {
+            Person.call(this, 'Rose'); // 重点
+            // this.age = 21;
+        }
+        var student2 = new Student2();
+        console.log(student2.name, '借用构造函数继承'); // Rose
+        console.log(student2.skill, '借用构造函数继承');
+        console.log(student2 instanceof Person); // false
+        /**
+         * 借用构造函数继承
+         * 重点：用 .call() 和 .apply() 将父类构造函数引入子类函数（在子类函数中做了父类函数的自执行（复制））
+         * 特点：
+         * 1、只继承了父类构造函数的属性，没有继承父类原型的属性。
+         * 2、解决了原型链继承缺点1、2、3。
+         * 3、可以继承多个构造函数属性（call多个）。
+         * 4、在子实例中可向父实例传参。
+         * 缺点：
+         * 1、只能继承父类构造函数的属性。
+         * 2、无法实现构造函数的复用。（每次用每次都要重新调用）
+         * 3、每个新实例都有父类构造函数的副本，臃肿
+        */
+
+        // 方式三：组合继承(组合原型链继承和借用构造函数继承)（常用）
+        function Student3 (name) {
+            Person.call(this, name); // 借用构造函数模式
+        }
+        Student3.prototype = new Person(); // 原型链继承
+        Student3.prototype.constructor = Student3;
+        var student3 = new Student3('xiaofang');
+        console.log(student3.name, '组合继承'); // xiaofang
+        console.log(student3.age, '组合继承'); // 18
+        console.log(student3 instanceof Person); // true
+        /**
+         * 组合继承(组合原型链继承和借用构造函数继承)
+         * 重点：结合了两种模式的优点，传参和复用
+         * 特点：
+         * 1、可以继承父类原型上的属性，可以传参，可复用。
+         * 2、每个新实例引入的构造函数属性是私有的。
+         * 缺点：调用了两次父类构造函数（耗内存），子类的构造函数会代替原型上的那个父类构造函数。
+        */
+
+
+        // 方式四：原型式继承
+        // 先封装一个函数容器，用来输出对象和承载继承的原型
+        function content (obj) {
+            function Fn () {}
+            Fn.prototype = obj; // 继承了传入的参数
+            return new Fn(); // 返回函数对象
+        }
+        var sup = new Person(); // 拿到父类的实例
+        var sup1 = content(sup);
+        console.log(sup1.age, '原型式继承'); // 18
+        /**
+         * 原型式继承
+         * 重点：用一个函数包装一个对象，然后返回这个函数的调用，这个函数就变成了个可以随意增添属性的实例或对象。
+         * object.create()就是这个原理。(Object.create(proto [, propertiesObject ]) 是E5中提出的一种新的对象创建方式，第一个参数是要继承的原型，如果不是一个子函数，可以传一个 null，第二个参数是对象的属性描述符，这个参数是可选的。)
+         * 特点：类似于复制一个对象，用函数来包装。
+         * 缺点：
+         * 1、所有实例都会继承原型上的属性。
+         * 2、无法实现复用。（新实例属性都是后面添加的）
+        */
+
+
+        // 方式五：寄生式继承
+        // function content (obj) {
+        //     function Fn () {}
+        //     Fn.prototype = obj; // 继承了传入的参数
+        //     return new Fn(); // 返回函数对象
+        // }
+        // var sup = new Person(); // 拿到父类的实例
+        // 以上是原型式继承，给原型式继承载套个壳子传递参数
+        function subObject (obj) {
+            var sub = content(obj);
+            sub.name = 'aaa';
+            return sub;
+        }
+        var sup2 = subObject(sup);
+        // 这个函数经过声明之后就成了可增加属性的对象
+        console.log(typeof subObject); // function
+        console.log(typeof sup2); // object
+        console.log(sup2.name, '寄生式继承'); // aaa
+        /**
+         * 寄生式继承
+         * 重点：就是给原型式继承外面套了个壳子。
+         * 优点：没有创建自定义类型，因为只是套了个壳子返回对象（这个），这个函数顺理成章就成了创建的新对象。
+         * 缺点：没用到原型，无法复用。
+         * 
+        */
+
+        // 方式六：寄生组合式继承
+        // 寄生：在函数内返回对象然后调用
+        function create (obj) {
+            function Fn () {}
+            Fn.prototype = obj;
+            return new Fn();
+        }
+        // create 就是 Fn 实例的另一种表示法
+        var con = create(Person.prototype);
+        // con 实例（Fn 实例）的原型继承了父类函数的原型
+        // 上述更像是原型链继承，只不过只继承了原型属性
+
+        // 组合：1、函数的原型等于另一个实例。2、在函数中用apply或者call引入另一个构造函数，可传参　
+        function Sub () {
+            Person.call(this); // 这个继承了父类构造函数的属性
+            // 解决了组合式两次调用构造函数属性的缺点
+        }
+        // 重点
+        Sub.prototype = con; // 继承了 con 实例
+        con.constructor = Sub; // 一定要修复实例
+        var sub1 = new Sub();
+        // Sub 的实例就继承了构造函数属性，父类实例，con 的函数属性
+        console.log(sub1.age, '寄生组合式继承'); // 18
+        /**
+         * 重点：修复了组合继承的问题
+        */
+
+        // 上述寄生组合式继承和以下例子的效果是一样的
+        function Fn () {}
+        Fn.prototype = Person.prototype;
+        function Sub () {
+            Person.call(this);
+        }
+        Sub.prototype = new Fn();
+        var sub2 = new Sub();
+        console.log(sub2.age);
+    </script>
+</body>
+</html>

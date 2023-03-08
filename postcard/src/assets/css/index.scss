@@ -1,0 +1,27 @@
+@import './variables.scss';
+@import './mixin.scss';
+
+html,
+body .app {
+  color: #333333;
+  font-family:'Microsoft YaHei',Arial, Helvetica, 'STHeiti STXihei', Tohoma, sans-serif;
+  background-color: $background-color;
+  overflow: hidden;
+}
+body{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+}
+*{margin: 0;padding: 0;border: 0;}
+@supports (bottom: env(safe-area-inset-bottom)) {
+  body {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+}
+@font-face {
+  font-family: 'uimianfei';
+  src: url('../font/uimianfei.ttf');
+}

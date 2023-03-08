@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS 数据代理</title>
+</head>
+<body>
+  <h3>JS 数据代理</h3>
+  <script>
+    // 数据代理：通过一个对象代理对另一个对象中属性的操作（读/写）
+    // 通过 Object.defineProperty() 方法进行代理
+    let num = 18
+    let person = {
+      name: '张三',
+      sex: '男'
+    }
+    Object.defineProperty(person, 'age', {
+      // value: 20,
+      // enumerable: true, // 控制属性是否可以枚举，默认值是 false
+      // writable: true, // 控制属性是否可以被修改，默认值是 false
+      // configurable: true, // 控制属性是否可以被删除，默认值是 false
+
+      // 当读取 person 的 age 属性时，get函数 (getter) 就会被调用，且返回值就是 age 的值
+      get () {
+        console.log('有人读取 age 属性！！！')
+        return num;
+      },
+      // 当修改 person 的 age 属性时，set函数 (setter) 就会被调用，且会收到修改的具体值
+      set (val) {
+        console.log('有人修改 age 属性！！！值为：', val)
+        // person.age = val // 会进入死循环，内存溢出
+        num = val
+      }
+    })
+    console.log(person.age)
+  </script>
+</body>
+</html>

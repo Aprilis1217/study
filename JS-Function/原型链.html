@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 
+    深度解析原型中的各个难点: https://hub.fastgit.org/KieSun/Dream/issues/2
+    聊聊 new 操作符: https://hub.fastgit.org/KieSun/Dream/issues/14
+  -->
+  <script>
+    // 构造函数
+    function Animal () {}
+    // new 创建一个实例对象
+    const animal = new Animal()
+    console.log(animal.constructor === Animal)
+    // 构造函数的 constructor 指向创建的实例对象
+    console.log(Animal.prototype) // {constructor: ƒ}
+    console.log(animal.__proto__ === Animal.prototype) // true
+
+    /**
+     * 所有对象都有一个属性 __proto__ 指向它的原型对象
+     * 每个对象的原型都可以通过 constructor 指向它的构造函数，构造函数也可以通过 prototype 指向它的原型
+     * 所有函数都可以通过 __proto__ 指向 Function 对象
+     * 所有对象都可以通过 __proto__ 指向 Objet 对象
+     * 对象之间通过 __proto__ 连接起来，称之为原型链。当前对象上不存在的属性可以通过原型链一层层往上找，直到顶层 Object 对象，再往上就是 null
+    */
+
+  </script>
+</body>
+</html>
+
+<script>
+  /**
+   * prototype 属性，它是一个显式原型属性，只有函数才拥有该属性。
+   * 基本上所有函数都有这个属性，但是也有例外 let fun = Function.prototype.bind()
+  */
+
+  let fun = Function.prototype.bind()
+  console.log(fun.__proto__, '特殊函数__proto__') // {constructor: ƒ, __defineGetter__: ƒ, __defineSetter__: ƒ, hasOwnProperty: ƒ, __lookupGetter__: ƒ, …}
+  console.log(fun.prototype, '特殊函数prototype') // undefined
+
+  let fn = () => {}
+  console.log(fn.__proto__, '箭头函数__proto__') // ƒ () { [native code] }
+  console.log(fn.prototype, '箭头函数prototype') // undefined
+
+  // prototype 如何产生的？
+  // 当我们声明一个函数时，这个属性就被自动创建
+  function Foo () {}
+  console.log(Foo.prototype) // {constructor: ƒ}
+  // 并且这个属性的值是一个对象（就是原型对象）只有一个属性 constructor
+  // constructor 对应构造函数，也就是 Foo
+  
+  /**
+   * constructor 是一个公有且不可枚举的属性。一旦我们改变了函数的 prototype，那么新对象就会没有这个属性了（当然我们还是可以通过原型链取到 constructor）
+   * 
+   * constructor 这个属性有什么用？
+   * 让实例对象知道是什么函数构造了它
+   * 如果想给某些类库中的构造函数增加一些自定义的方法，就可以通过 xxx.constructor.methond 来扩展
+  */
+
+  /**
+   * __proto__ 是每个对象都有的隐式原型属性，指向了创建该对象的构造函数的原型。
+   * 其实这个属性指向了 [[prototype]]，但是 [[prototype]] 是内部属性，我们并不能访问到，所以才使用的 __proto__ 来访问
+   * 
+   * 因为在 js 中没有类的概念，为了实现类似继承的方式，通过 __proto__ 将对象和原型联系起来组成了原型链，得以让对象可以访问到不属于自己的属性
+  */
+
+  // 实例对象的 __proto__ 是如何产生的？
+  // 当我们使用 new 操作符时，生成的实例对象就拥有了 __proto__ 隐式原型属性
+  // 在 new 的过程中，新对象被添加了 __proto__ 并且连接到了构造函数的原型上
+  /**
+   * new 的过程
+   * 1. 创建一个新的空对象
+   * 2. 连接到原型
+   * 3. 绑定 this
+   * 4. 返回新对象
+  */
+
+  function create () {
+    // 创建个空对象
+    let obj = {}
+    // 获取构造函数
+    let Con = [].shift.call(arguments)
+    // 连接到原型
+    obj.__proto__ = Con.prototype
+    // 绑定 this 执行构造函数
+    let result = Con.apply(obj, arguments)
+    // 确保 new 出来的是个对象
+    return result instanceof Object ? result : obj
+  }
+  function createNew (Con, ...args) {
+    let obj = {}
+    // obj.__proto__ = Con.prototype // ES5
+    Object.setPrototypeOf(obj, Con.prototype) // ES6
+    let result = Con.apply(obj, args)
+    return result instanceof Object ? reslut : obj
+  }
+
+  // 例子1：
+  function Test1(name) {
+    this.name = name
+  }
+  Test1.prototype.sayName = function () {
+    console.log(this.name)
+  }
+  const t1 = new Test1('yiyi')
+  console.log(t1.name) // yiyi
+  t1.sayName() // yiyi
+  /**
+   * 通过例子1说明：
+   * 1. new 通过构造函数 Test1 创建出来的实例可以访问到构造函数中的属性
+   * 2. new 通过构造函数 Test1 创建出来的实例可以访问到构造函数原型链中的属性
+   * 也就是说，通过 new 操作符 实例与构造函数通过原型链连接了起来
+  */
+
+  // 例子2：
+  function Test2(name) {
+    this.name = name
+    return 2
+  }
+  const t2 = new Test2('liuliu')
+  console.log(t2.name) // liuliu
+  /**
+   * 通过例子2说明：
+   * 1. 构造函数如果返回原始值(Number, String, NaN, null, undefined, Boolean, Symbol, BigInt)，那么这个返回值毫无意义
+   * 2. 构造函数如果返回值为对象，那么这个返回值会被正常使用
+  */
+
+
+  /**
+   * 注意点：
+   * 对于实例对象来说，都是通过 new 产生的，无论是 function Foo () {} 还是 let obj = {a: 1}
+   * 对于创建一个对象来说，更推荐使用字面量的方式创建对象。因为你是用 new Object() 的方式来创建对象需要通过作用域链一层层找到 Object ，但是使用字面量的方式就没有这个问题
+   * 
+   * function Foo() {}
+   * function 就是个语法糖 内部等同于 new Function()
+   * let a = { b: 1 }
+   * 这个字面量内部也是使用了 new Object()
+  */
+
+
+  /**
+   * 总结：
+   * 1. Object 是所有对象的爸爸，所有的对象都可以通过 __proto__ 找到它
+   * 2. Function 是所有函数的爸爸，所有的函数都可以通过 __proto__ 找到它
+   * 3. Object.prototype 和 Function.prototype 是两个特殊的对象，它们由引擎来创建的
+   * 4. 除了以上的两个特殊对象，其他的对象都是通过构造器 new 出来的
+   * 5. 函数的 prototype 是一个对象，也就是原型对象
+   * 6. 对象的 __proto__ 指向原型，__proto__ 将对象和原型连接起来组成了原型链
+  */
+</script>

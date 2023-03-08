@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Vue.directive 自定义指令</title>
+    <script src="../assets/js/vue.js"></script>
+  </head>
+  <body>
+    <h1>Vue.directive 自定义指令</h1>
+    <hr />
+    <div id="app">
+      <p v-feng="color">{{num}}</p>
+      <p><button @click="add">加法</button></p>
+      <hr />
+      <p><input v-focus type="text" /></p>
+    </div>
+
+    <p>
+      <button onclick="unbind()">解绑</button>
+    </p>
+
+    <script>
+      // 解绑
+      function unbind() {
+        app.$destroy(); // 销毁
+      }
+      // 全局自定义指令
+      // Vue.directive('feng', (el, binding) => {
+      //     console.log(el) // <p style="color: red;">12</p>
+      //     console.log(binding) // Object {name: "feng", rawName: "v-feng", value: "red", expression: "color", modifiers: Object…}
+      //     console.log(binding.name) // feng 指令名，不包括 v- 前缀
+      //     console.log(binding.value) // red 指令的绑定值
+      //     console.log(binding.expression) // color
+      //     el.style = "color:" + binding.value
+      // })
+      // Vue.directive 自定义指令的钩子函数
+      // 自定义自定中的 this 都是指向 window
+      Vue.directive("feng", {
+        // 被绑定
+        bind(el, binding) {
+          // 1. 只调用一次，指令第一次绑定到元素时调用（一般用作一次性的初始化设置）
+          console.log("1 - bind - 被绑定", this);
+          el.style = "color:" + binding.value;
+        },
+        // 绑定到节点
+        inserted(el, binding) {
+          // 2. 被绑定元素插入父节点时调用（仅保证父节点存在，但不一定已被插入文档中）
+          console.log("2 - inserted - 绑定到节点");
+        },
+        // 组件更新
+        update(el, binding) {
+          // 3. 所有组件的 VNode 更新时调用，但是可能发生在其子 VNode 更新之前。指令的值可能发生了变化，也可能没有
+          console.log("3 - update - 组件更新");
+        },
+        // 组件完成更新
+        componentUpdated(el, binding) {
+          // 4. 指令所在组件的 VNode 及其子 VNode 全部更新后调用
+          console.log("4 - componentUpdated - 组件完成更新");
+        },
+        // 解绑
+        unbind(el, binding) {
+          // 5. 只调用一次，指令与元素解绑时调用
+          console.log("5 - unbind - 解绑");
+        },
+      });
+      // 生成一个 Vue 实例
+      let app = new Vue({
+        el: "#app",
+        data: {
+          num: 12,
+          color: "red",
+        },
+        // 局部自定义指定
+        directives: {
+            /**
+             * todo 自定义指定何时被调用？
+             * 指令与元素成功绑定时（初始化）
+             * 指令所在的模板被重新解析时
+            */
+          focus: {
+            // 指令的定义
+            inserted: function (el, binding) {
+              // inserted 钩子函数：被绑定元素插入父节点时调用（仅保证父节点存在，但不一定已被插入文档中）
+              el.focus();
+            },
+          },
+        },
+        methods: {
+          add() {
+            this.num++;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

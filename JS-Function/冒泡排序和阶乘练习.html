@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script>
+		// 冒泡排序
+		/*
+		var array = [99, 14, 520, 13, 66];
+		for (i = 0; i < array.length - 1; i++) {
+			var isSort = true;
+			for (j = 0; j < array.length - 1 - i; j++) {
+				if (array[j] > array[j + 1]) {
+					isSort = false;
+					var tmp = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = tmp;
+				}
+			}
+			if (isSort) {
+				break;
+			}
+		}
+		console.log(array); */
+		
+		function sortArr (arr) {
+			for (var i = 0; i < arr.length - 1; i++) {
+				var flag = true;
+				for (var j = 0; j < arr.length - i - 1; j++) {
+					if (arr[j] > arr[j + 1]) {
+						flag = false;
+						var tmp = arr[j];
+						arr[j] = arr[j + 1];
+						arr[j + 1] = tmp;
+					}
+				}
+				if (flag) {
+					break;
+				}
+			}
+			return arr;
+		}
+		// ----------------------------------------------------------
+		// 求阶乘 1! + 2! + 3! + ... + n!的和
+		function getJieCheng (n) {  //  求一个数的阶乘  n 表示形参
+			var jieCheng = 1;
+			for (var i = 1; i <= n; i++) {
+				jieCheng *= i; 
+			}
+			return jieCheng;
+		}
+		function getSum (m) {  //  求和   m 表示形参
+			var sum = 0;
+			for (j = 0; j <= m; j++) {
+				// 调用上面阶乘的函数
+				sum += getJieCheng(j);  //  这里的 j 表示实参
+			}
+			return sum;
+		}
+		console.log(getSum(5));
+
+		// 用函数实现斐波那契数列：1, 1, 2, 3, 5, 8, 13, 21, 34...
+		function fibonacci (n) {
+			// 循环解法
+			let num1 = 1;
+			let num2 = 1;
+			for (let i = 2; i < n; i++) { // 此处代码重点部分，用 num3 累加前两个数的和，也是斐波那契数列的精髓所在。
+				var num3 = num1 + num2;
+				num1 = num2;
+				num2 = num3;
+			}
+			if (n === 1 || n === 2) { // 判断 n==1或2 的情况下返回 1
+				return num1;
+			}
+			return num3; // 最后返回 num3
+		}
+		console.log(fibonacci(3), '斐波那契数列')
+
+		function fibonacci1(n) {
+			// 去除重复计算的递归版本实现
+			function fibonacci1(n, a, b) {
+				if (n === 0) {
+					return a;
+				} else {
+					return fibonacci1(n - 1, b, a + b);
+				}
+			}
+			return fibonacci1(n, 0, 1);
+		}
+		console.log(fibonacci1(2), '去除重复计算的递归版本');
+
+		function useArguments () {
+			console.log(arguments)
+			var sum = 0;
+			// Array.prototype.slice.call(arguments).forEach(value => {
+			// 	sum += value
+			// });
+			for (var i = 0; i < arguments.length; i++) {
+				sum += arguments[i]
+			}
+			return sum;
+		}
+		console.log(useArguments(1, 2, 3, 4))
+
+		function valueAtBit(num, bit) {
+			var num1 = (num).toString(2)
+			// console.log(num1, '二进制数')
+			
+			return num1[num1.length - bit];
+		}
+		console.log(valueAtBit(128, 8));
+
+		function convertToBinary(num) {
+			var str = num.toString(2);
+			console.log(str, '二进制')
+			while (str.length < 8) {
+				str = '0' + str
+			}
+			return str;
+		}
+		console.log(convertToBinary(65))
+
+
+		// 实现函数 functionFunction，调用之后满足如下条件：
+		// 1、返回值为一个函数 f
+		// 2、调用返回的函数 f，返回值为按照调用顺序的参数拼接，拼接字符为英文逗号加一个空格，即 ', '
+		// 3、所有函数的参数数量为 1，且均为 String 类型
+		function functionFunction (str) {
+			if (typeof str === 'string' && arguments.length === 1) {
+				return f = function (str1) {
+					if (typeof str1 === 'string' && arguments.length === 1) {
+						return str + ', ' + str1;
+					}
+				}
+			}
+		}
+		console.log(functionFunction('Hello')('World'));
+
+		// 将 fn 的执行上下文改为 obj
+		let obj = {
+			greeting: 'Hello',
+			name: 'Rebecca'
+		}
+		let fn = function () {
+			return this.greeting + ', ' + this.name;
+		}
+		function speak () {
+			return fn.call(obj);
+		}
+		console.log(speak(fn, obj));
+
+
+		// 利用闭包实现函数 makeClosures，调用之后满足如下条件：
+		// 1、返回一个函数数组 result，长度与 arr 相同
+		// 2、运行 result 中第 i 个函数，即 result[i]()，结果与 fn(arr[i]) 相同
+		function makeClosures(arr, fn) {
+			var result = [];
+			arr.forEach(function (val, index, arr) {
+				result[index] = function () {
+					return fn(val);
+				}
+			})
+			return result;
+		}
+		makeClosures([1, 2, 3], function (x) {return x * x;})
+		// function makeClosures(arr, fn) {
+		// 	var result = [];
+		// 	arr.forEach(function(e){
+		// 		result.push(function(num){
+		// 			return function(){
+		// 				return fn(num);
+		// 			};
+		// 		}(e));
+		// 	});
+		// 	return result;
+		// }
+
+
+		// 已知函数 fn 执行需要 3 个参数。请实现函数 partial，调用之后满足如下条件：
+		// 1、返回一个函数 result，该函数接受一个参数
+		// 2、执行 result(str3) ，返回的结果与 fn(str1, str2, str3) 一致
+		
+		/**
+		 * call 和 apply 必须显示的调用 str3，立即执行
+		 * bind 不是立即执行，为传入 str3 时，并未执行，只返回一个函数，等待参数传入
+		 * this 用于上下文不确定的情况
+		*/
+		let sayIt = function (greeting, name, punctuation) {
+			return greeting + ', ' + name + (punctuation || '!');
+		}
+		function partial (fn, str1, str2) {
+			function result (str3) {
+				// return fn.call(this, str1, str2, str3);
+				return fn.apply(this, [str1, str2, str3]);
+			}
+			// console.log(result)
+			return result;
+		}
+		partial(sayIt, 'Hello', 'Ellie')('!!!');
+		
+
+
+		// JS获取URL中参数值（QueryString）的 3 种方法
+		// 方法一：正则法
+		function getQueryString1 (name) {
+			if (!name) return null
+			let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
+			let arr = window.location.search.strsting(1).match(reg);
+			if (arr != null) {
+				// unescape() 函数可对通过 escape() 编码的字符串进行解码
+				// ECMAScript v3 已从标准中删除了 unescape() 函数，并反对使用它
+				// 因此应该用 decodeURI() 和 decodeURIComponent() 取而代之。
+				return decodeURIComponent(arr[2]);
+			}
+			return null;
+		}
+		// 调用
+		// getQueryString1("参数名1")
+
+		// 方法二：split 拆分法
+		function getQueryString2 (name) {
+			// 获取 url 中 ? 后面的字符串
+			let url = window.location.search;
+			let theRequest = new Object();
+			if (url.includes('?')) {
+				let str = url.substring(1);
+				let params = str.split('&');
+				for (let val of params) {
+					theRequest[val.split("=")[0]] = decodeURIComponent(val.split("=")[1]);
+				}
+			}
+			return theRequest;
+		}
+		// 调用
+		var Request = new Object();
+		Request = getQueryString2();
+		// var 参数1,参数2,参数3,参数N;
+		// 参数1 = Request['参数1'];
+		// 参数2 = Request['参数2'];
+		// 参数3 = Request['参数3'];
+		// 参数N = Request['参数N'];
+
+		// 方法三：单个参数的获取方法
+		function getQueryString3 () {
+			let url = window.location.search; // 获取 url 中 "?" 符后的字串
+			if (url.includes('?')) { // 判断是否有参数 
+				let str = url.substring(1);
+				// 用等号进行分隔
+				// 因为知道只有一个参数 所以直接用等号进分隔 如果有多个参数 要用&号分隔 再用等号进行分隔
+				let params = str.split('='); 
+				alert(params[1]); //直接弹出第一个参数 （如果有多个参数 还要进行循环的）
+			}
+		}
+		
+
+		// 获取地址栏中指定的参数
+		function getUrlParams (name) {
+			// hash	从井号 (#) 开始的 URL（锚）
+			// host	主机名和当前 URL 的端口号
+			// hostname	当前 URL 的主机名
+			// href	完整的 URL
+			// pathname	当前 URL 的路径部分
+			// port	当前 URL 的端口号
+			// protocol	当前 URL 的协议
+			// search	从问号 (?) 开始的 URL（查询部分）
+			// 未传参，返回空
+			if (!name) return null
+			// 查询参数：先通过 search 取值，如果取不到就通过 hash 来取值
+			let url = window.location.search.substr(1) || window.location.hash.split('?')[1]
+			// 地址栏 URL 没有查询的参数，返回空
+			if (!url) return null
+			// 如果查询的参数中没有 name 返回空
+			if (url.indexOf(name) === -1) return null
+
+			let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i')
+			// 当地址栏参数存在中文时，需要解码，不然会乱码
+			let result = decodeURI(url).match(reg)
+			// 如果 url 中 name 没有值，返回空
+			if (!result) return null
+			return result[2]
+		}
+		// 调用方法
+		// getUrlParams('参数名')
+		// 
+		// 举例1:若地址栏URL为：abc.html?id=123&name=池子&url=http://www.baidu.com
+		console.log('地址栏参数id',getUrlParams("id"))
+		console.log('地址栏参数name',getUrlParams("name"))
+		console.log('地址栏参数url',getUrlParams("ursl"))
+
+		// 利用递归实现数组扁平化
+		let array = [1, [2, 3, [4, [5]]], 6]
+		let arr_flat = []
+		let arrFlat =  (arr) => {
+			arr.forEach((item, index) => {
+				console.log(item, 'item')
+				if (Array.isArray(item)) {
+					arrFlat(item)
+				} else {
+					arr_flat.push(item)
+				}
+			})
+			return arr_flat
+		}
+		console.log(arrFlat(array), '数组扁平化')
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

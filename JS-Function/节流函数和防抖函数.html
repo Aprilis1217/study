@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /**
+     * 函数防抖
+     * 指触发事件在 n 秒内函数只执行一次，如果在 n 秒内又触发了事件，则会重新计算函数执行时间。简单地说，当一个动作连续触发，则只执行最后一次
+     * 
+     * 应用场景：
+     * 连续的事件只需要触发一次回调的场景
+     * 1. 搜索框搜索输入，只需用户最后一次输入完，再发送请求
+     * 2. 手机号、邮箱验证输入检测
+     * 3. 窗口大小 Resize，只需窗口调整完成后，计算窗口大小，防止重复渲染
+    */
+    const debounce = (fn, wait = 500) => { // 非立即执行
+      // 非立即执行版的意思是触发事件后函数不会立即执行，而是在 n 秒后执行，如果在 n 秒内又触发了事件，则会重新计算函数执行时间
+      let timer = null
+      return (...args) => {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          fn.apply(this, args)
+        }, wait)
+      }
+    }
+    const immediateDebounce = (fn, wait = 500) => {
+      let timeout = null
+      return (...args) => {
+        if (timeout) clearTimeout(timeout)
+        const callNow = !timeout
+        timeout = setTimeout(() => {
+          timeout = null
+        }, wait)
+        if (callNow) fn.apply(this, args)
+      }
+    }
+    /**
+     * @desc 函数防抖
+     * @param func 函数
+     * @param wait 延迟执行毫秒数
+     * @param immediate true 表立即执行，false 表非立即执行
+     */
+    const _Debounce = (fn, wait = 500, immediate = true) => {
+      let timeout = null
+      return (...args) => {
+        if (timeout) clearTimeout(timeout)
+        if (immediate) {
+          const callNow = !timeout
+          timeout = setTimeout(() => {
+            timeout = null
+          }, wait)
+          if (callNow) fn.apply(this, args)
+        } else {
+          timeout = setTimeout(() => {
+            fn.apply(this, args)
+          }, wait)
+        }
+      }
+    }
+    
+    /**
+     * 函数节流
+     * 限制一个函数在一定时间内只执行一次
+     * 
+     * 应用场景：
+     * 间隔一段时间执行一次回调的场景
+     * 1. 滚动加载，加载更多或者滚到底部监听
+     * 2. 谷歌搜索框，搜索联想功能
+     * 3. 高频点击提交，表单重复提交
+    */
+    // 定时器版本
+    const throttle1 = (fn, wait = 500) => {
+      let timer = null
+      return (...args) => {
+        if (!timer) {
+          timer = setTimeout(() => {
+            timer = null
+            fn.apply(this, args)
+          }, wait)
+        }
+      }
+    }
+    // 时间戳版本
+    const throttle2 = (fn, wait = 500) => {
+      let prev = 0
+      return (...args) => {
+        let now = Date.now()
+        if (now - prev > wait) {
+          fn.apply(this, args)
+          prev = now
+        }
+      }
+    }
+
+    /**
+     * @desc 函数节流
+     * @param func 函数
+     * @param wait 延迟执行毫秒数
+     * @param type 1 表时间戳版，2 表定时器版
+     */
+    const throttle = (fn, wait = 500, type) => {
+      if (type === 1) {
+        let previous = 0
+      } else if (type === 2) {
+        let timeout = null
+      }
+      return (...args) => {
+        if (type === 1) {
+          let now = Date.now()
+          if (now - previous > wait) {
+            fn.apply(this, args)
+          }
+        } else if (type === 2) {
+          if (!timeout) {
+            timeout = setTimeout(() => {
+              timeout = null
+              fn.apply(this, args)
+            }, wait)
+          }
+        }
+      }
+    }
+
+    /**
+     * 异同比较
+     * 相同点：
+     * 都可以通过使用 setTimeout 实现
+     * 目的都是降低回调执行频率，节省计算资源
+     * 
+     * 不同点：
+     * 函数防抖，在一段连续操作结束后处理回调，利用 clearTimeout 和 setTimeout 实现；函数节流，在一段连续操作中，每一段时间只执行一次，频率较高的事件中使用来提高性能
+     * 函数防抖关注一定时间连续触发，只在最后执行一次；而函数节流侧重于一段时间内只执行一次
+    */
+  </script>
+</body>
+</html>

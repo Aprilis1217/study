@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Component 的创建</title>
+    <script src="../assets/js/vue.js"></script>
+  </head>
+  <body>
+    <h1>Component 的创建</h1>
+    <hr />
+    <div id="app">
+      <!-- {{message}} -->
+      <!-- 使用组件和使用 HTML 标签一样的用法 -->
+      <index-a></index-a>
+      <index-b></index-b>
+      <index-c></index-c>
+      <index-d></index-d>
+      <index-e></index-e>
+    </div>
+    <!-- 定义 template 模板得到 vue 管辖范围之外 -->
+    <template id="temp">
+      <div><p>index-d 组件</p></div>
+    </template>
+    <script type="x-template" id="tem">
+      <div><p>index-e 组件</p></div>
+    </script>
+    <script>
+      // 创建组件的三种方式
+      // 注意点：1. 模板 template 中只能有一个根节点; 2. 组件的名字若是采用的驼峰命名法时，就需要加上连字符 "-"
+
+      // 第一种：使用 Vue.extend() 和 Vue.component() 两个方法创建
+      // Vue.extend()方法会返回一个组件的构造器
+      // Vue.component()方法会利用 Vue.extend()方法返回的构造器创建一个组件的实例; 参数1：组件的名字; 参数2：一个组件的构造器
+      let Index = Vue.extend({
+        template: `<div><p>index-a 组件</p></div>`,
+      });
+      Vue.component("indexA", Index);
+
+      // 第二种：直接使用 Vue.component()方法创建
+      Vue.component("indexB", {
+        template: `<p>index-b 组件-----{{msg}} <button @click="changeMsg">点击</button></p>`,
+        // 组件中的 data 选项必须是一个函数
+        data() {
+          return {
+            msg: "Hello World",
+          };
+        },
+        methods: {
+          changeMsg() {
+            this.msg = "点击事件";
+          },
+        },
+      });
+
+      // 其实 Vue.component()方法本质上还是调用了 Vue.extend()方法
+      Vue.component(
+        "indexC",
+        Vue.extend({
+          template: `<div><p>index-c 组件</p></div>`,
+        })
+      );
+
+      // 第三种：通过指定模板创建
+      Vue.component("indexD", {
+        template: "#temp",
+      });
+
+      Vue.component("indexE", {
+        template: "#tem",
+      });
+      // 生成一个 Vue 实例
+      let app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello World",
+        },
+      });
+    </script>
+  </body>
+</html>

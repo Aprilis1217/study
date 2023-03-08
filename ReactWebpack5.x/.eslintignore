@@ -1,0 +1,4 @@
+// 增加 eslint 需要忽略的校验文件：.eslintignore
+.eslintrc.js
+node_modules
+dist

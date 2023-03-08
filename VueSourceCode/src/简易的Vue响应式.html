@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>简易的 Vue 响应式</title>
+  </head>
+  <body>
+    <h3>简易的 Vue 响应式</h3>
+    <div id="app">
+      <p>
+        姓名：
+        <input type="text" v-model="name" /><br />
+        <span style="color: orange">{{name}}</span>
+      </p>
+      <p>
+        年龄：
+        <input type="text" v-model="age" /><br />
+        <span style="color: red">{{age}}</span>
+      </p>
+    </div>
+    <script src="./observer.js"></script>
+    <script src="./dep.js"></script>
+    <script src="./watcher.js"></script>
+    <script src="./compiler.js"></script>
+    <script src="./vue.js"></script>
+    <script>
+      // 创建一个 Vue 实例对象
+      const vm = new Vue({
+        el: "#app",
+        data: {
+          name: "阿柳",
+          age: 18,
+        },
+      });
+    </script>
+  </body>
+</html>

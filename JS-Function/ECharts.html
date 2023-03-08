@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- 1. 引入 ECharts.js 文件 -->
+    <script src="./echarts.js"></script>
+</head>
+<body>
+    <!-- 2. 为 Eharts 准备一个具备大小(宽高)的 DOM -->
+    <div id="main" style="width: 1000px; height: 600px"></div>
+    <script>
+        // 3. 通过 echarts.init() 方法初始化一个 echarts 实例，并通过 setOption 方法生成一个简单的图形
+        // 基于准备好的 DOM ，初始化 echarts 实例
+        let myChart = echarts.init(document.getElementById('main'))
+        // 指定图表的配置和数据
+        let options = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data: ['订单统计']
+            },
+            xAxis: {
+                data: ['下单', '接单', '流单', '拒单', '转单']
+            },
+            yAxis: {
+
+            },
+            series: [{
+                name: '订单量',
+                type: 'bar',
+                data: [12, 1314, 17, 26, 520]
+            }]
+        }
+        // 使用刚指定的配置和数据显示图表
+        myChart.setOption(options)
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script>
+	var arr = [33, 22, 13, 66, 14, 99];
+	var count = 0;  //  记录循环次数
+	// 外层循环  控制循环的次数，每次找到最大值
+	/*
+	for (var i = 0; i < arr.length - 1; i++) {
+		// 内层循环  控制两两比较的次数，并且要判断两个数的大小，大的数往后移，小的数往前移
+		count++;
+		// 定义一个布尔变量来判断是否排好了
+		var isSort = true;  //  初始赋值，假设数据排好了
+		for ( var j = 0; j < arr.length - 1 - i; j++) {
+			count++;
+			if (arr[j] > arr[j + 1]) {
+				isSort = false;
+				// 交换位置
+				var tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+		// 某一趟结束，判断一下是否结束
+		// 如何判断排序是否排好，根据是否发生了位置交换，如果发生了位置交换说明没有排好
+		if (isSort) {
+			break;
+		}
+	}
+	console.log(arr);
+	console.log(count);
+	*/
+	const sortArr = (arr) => {
+    for (let i = 0; i < arr.length - 1; i++) {
+        let flag = true
+        for (let j = 0; j < arr.length - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                flag = false
+                let temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+            }
+        }
+        if (flag) break
+    }
+    return arr
+}
+	console.log(sortArr(arr))
+	const Fibonacci = (n) => {
+    let [a, b, c] = [1, 1, null]
+    for (let i = 2; i < n; i++) {
+			c = a + b
+			a = b
+			b = c
+    }
+    if (n === 1 || n === 2) return a
+    return c
+	}
+	console.log(Fibonacci(6), 'hjhjgjgjg')
+
+	function fibonacci1(n) {
+			// 去除重复计算的递归版本实现
+			function fibonacci1(n, a, b) {
+				if (n === 0) {
+					return a;
+				} else {
+					return fibonacci1(n - 1, b, a + b);
+				}
+			}
+			return fibonacci1(n, 0, 1);
+		}
+		console.log(fibonacci1(3), '去除重复计算的递归版本');
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

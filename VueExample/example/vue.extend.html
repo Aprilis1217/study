@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue.extend 扩展实例构造器</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue.extend 扩展实例构造器</h1>
+    <hr>
+    <author></author>  
+
+    <script>
+        // 定义一个扩展实例构造器
+        var authorExtend = Vue.extend({
+            template: `<p><a :href="authorUrl">{{authorName}}</a></p>`,
+            data: function () {
+                return {
+                    authorName: 'JSPang',
+                    authorUrl: 'http://jspang.com'
+                }
+            }
+        })
+        // 将扩展实例构造器挂载起来
+        new authorExtend().$mount('author'); // <author></author>
+
+        // 挂载到普通标签上时，还可以通过 HTML 标签的 id 或 class 来生成扩展实例构造器
+        // new authorExtend().$mount('#author');
+
+
+    </script>
+</body>
+</html>

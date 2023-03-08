@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>flex布局</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .container {
+            width: 90%;
+            height: 500px;
+            margin: 0 auto;
+            border: 3px solid red;
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: row; /* 主轴方向，默认值是 row 水平方向 */
+            /* flex-direction: row-reverse; */
+            /* flex-direction: column; */
+            /* flex-direction: column-reverse; */
+            /*flex-wrap: wrap; /* 是否换行，默认值是 nowarp 不换行 */
+            /* flex-wrap: nowrap; */
+            /* flex-wrap: wrap-reverse; */
+            justify-content: center;
+            /* justify-content: flex-start; */
+            /* justify-content: flex-end; */
+            /* align-items: flex-start; */
+        }
+        div {
+            width: 20%;
+            height: 30%;
+            margin: 10px ;
+            background-color: rgb(152, 236, 55);
+        }
+    </style>
+</head>
+<body>
+    <h2>flex布局</h2>
+    <!-- <hr> -->
+    <section class="container">
+        <div class="div1">1</div>
+        <div class="div2">2</div>
+        <div class="div3">3</div>
+        <div class="div4">4</div>
+        <div class="div5">5</div>
+        <div class="div6">6</div>
+        <div class="div7">7</div>
+        <div class="div8">8</div>
+        <div class="div9">9</div>
+
+    <script>
+    // 容器属性：
+        // 1. flex-direction 主轴的方向(默认项目排列的方向)，有四个值
+            // 默认值 row 水平方向，起点在左端
+            // row-reverse 水平方向，起点在右端
+            // column 垂直方向，起点在上端
+            // column-reverse 垂直方向，起点在下端
+
+        // 2. flex-warp 是否换行，有三个值
+            // 默认值 nowarp 不换行
+            // warp 换行，按交叉轴的方向一行一行往下排
+            // warp-reverse 换行，按交叉轴相反方向，倒着一行一行的排列
+        
+        // 3. flex-flow 是 flex-direction 和 flex-warp 的简写
+
+        // 4. justify-content 项目在主轴方向的对齐方式，有五个值
+            // flex-start 延主轴起始端对齐 (类似于文本的左对齐)
+            // flex-end 延主轴结束端对齐 (类似于文本的右对齐)
+            // center 延主轴中点对齐 (类似于文本的居中)
+            // space-between 延主轴两端对齐，项目两端距离相等
+            // space-around 每个项目两侧的间隔相等 (类似于盒子模型的 margin，项目之间的间隔比项目与边框的间距大一倍)
+
+        // 5. align-items 项目在交叉轴方向的对齐方式，有五个值
+            // flex-start 延交叉轴起始端对齐 (类似于文本的顶端对齐)
+            // flex-end 延交叉轴结束端对齐 (类似于文本的底端对齐)
+            // center 延交叉轴中点对齐 (类似于文本的垂直居中)
+            // stretch 如果项目没有指定高度或者设置的 auto ,那么项目将会在交叉轴方向占满容器的高度
+            // baseline 项目的第一行文字基线对齐
+        
+        // 6. align-content 多轴线时轴线的对齐方式，有六个值
+            // flex-start 与交叉轴起始端对齐
+            // flex-end 与交叉轴结束端对齐
+            // center 与交叉轴中点对齐
+            // space-between 与交叉轴两端对齐，轴线之间的间隔平均分布
+            // space-around 每根轴线两侧的间隔都相等，轴线之间的间隔比轴线与边框的间隔大一倍 (类似于盒子模型的 margin，项目之间的间隔比项目与边框之间的间隔大一倍)
+            // stretch 默认值，轴线占满整个交叉轴
+
+    
+    // 项目属性：
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Component 兄弟组件传值</title>
+    <script src="../assets/js/vue.js"></script>
+  </head>
+  <body>
+    <h1>Component 兄弟组件传值</h1>
+    <hr />
+    <div id="app">
+      {{message}}
+      <father></father>
+    </div>
+
+    <script>
+      // 创建一个空的 vue 实例，作为事件总线（兄弟组件之间的桥梁）
+      let eventbus = new Vue();
+
+      // 定义一个父组件
+      Vue.component("father", {
+        template: `
+                <div>
+                    <son1></son1>
+                    <son2></son2>
+                </div>
+            `,
+        // 定义两个子组件
+        components: {
+          son1: {
+            data() {
+              return {
+                msg1: "wuhui",
+              };
+            },
+            template: `<p>我好像喜欢上你了，{{msg1}}</p>`,
+            mounted() {
+              // 通过事件总线来接收兄弟组件传来的值，再赋给自己
+              eventbus.$on("listenSon1", (value) => {
+                this.msg1 = value;
+              });
+            },
+          },
+          son2: {
+            data() {
+              return {
+                msg2: "wangxiaofang",
+              };
+            },
+            template: `<button @click="sendSon2">兄弟组件传值</button>`,
+            methods: {
+              sendSon2() {
+                // 通过事件总线发射一个事件名称和需要传递的值
+                eventbus.$emit("listenSon1", this.msg2);
+              },
+            },
+          },
+        },
+      });
+      // 生成一个 Vue 实例
+      let app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello World",
+        },
+      });
+    </script>
+  </body>
+</html>

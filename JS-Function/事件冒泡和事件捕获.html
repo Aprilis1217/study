@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>事件冒泡和事件捕获</title>
+</head>
+<body>
+  <div id="div1">
+    <div id="div2">
+      <div id="btn">button</div>
+    </div>
+  </div>
+</body>
+</html>
+<script>
+  /**
+   * 事件模型三个阶段：（此模型是 W3C 制定的标准）现代浏览器（IE6~8除外）都已经遵循这个规范
+   * 1. 事件捕获阶段 ---> 当某个元素触发某个事件，顶层对象 document 就会发出一个事件流，随着 DOM 树的节点向目标元素节点流去，直到到达事件真正发生的目标元素。在这个过程中，事件相应的监听函数是不会被触发的
+   * 
+   * 2. 事件目标阶段 ---> 当到达目标元素之后，执行目标元素该事件相应的处理函数。如果没有绑定监听函数，那就不执行
+   * 3. 事件冒泡阶段 ---> 从目标元素开始，往顶层元素传播。途中如果有节点绑定了相应的事件处理函数，这些函数都会被一次触发
+   **/ 
+  // 注意：所有的事件类型都会经历事件捕获，但是只有部分事件会经历事件冒泡阶段,例如submit事件就不会被冒泡。
+</script>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Vue 中引用 jQuery</title>
+    <script src="../assets/js/jquery-3.3.1.js"></script>
+    <script src="../assets/js/vue.js"></script>
+  </head>
+  <body>
+    <h1>Vue 中引用 jQuery</h1>
+    <hr />
+    <div id="app">{{message}}</div>
+
+    <script>
+      // 生成一个 Vue 实例
+      let app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello World",
+        },
+        methods: {
+          add() {
+            console.log("构造器中的 add 方法！");
+          },
+        },
+        // 在 Vue 中引用 jQuery
+        created() {
+          $("#app").html("在 Vue 中引用 jQuery");
+        },
+        // mounted () { // DOM 元素已经加载好了
+        //     $('#app').html('在 Vue 中引用 jQuery')
+        // }
+      });
+      // 实例调用
+      app.add();
+      // 打印出 app 实例中的方法
+      console.log(app); // Vue {_uid: 0, _isVue: true, $options: Object, _renderProxy: Proxy, _self: Vue…}
+    </script>
+  </body>
+</html>

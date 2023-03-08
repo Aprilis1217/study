@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <script src="../assets/js/vue.js"></script>
+    <script src="../assets/js/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <router-link to="/index">首页</router-link>
+        <router-link to="/news">新闻</router-link>
+        <router-link to="/friend">朋友圈</router-link>
+        <router-view></router-view>
+    </div>
+
+</div>
+
+<script>
+    // 注册新闻列表模块
+    Vue.component('newstpl',{
+        template:`<div><h2>新闻页</h2><ul><li v-for="i in list"><router-link :to=" \'/news/\' + i.path">{{i.name}}</router-link></li></ul><router-view></router-view></div>`,
+        data(){
+            return {
+                list:[
+                    {name:'新闻一',path:'new1'},
+                    {name:'新闻二',path:'new2'},
+                    {name:'新闻三',path:'new3'}
+                ],
+
+            }
+        }
+    });
+    // 注册新闻内容模块 实现内容针对性
+    Vue.component('contenttpl',{
+        props: {
+            data1: {
+                default: 'new4'
+            }
+        },
+        template:`<div><h1>{{yemian[0].title}}</h1><h2>{{yemian[0].content}}</h2></div>`,
+        data(){
+            return {
+                yemian:[{}],
+                newlist:[
+                    {title:'new1',content:'新闻一的内容'},
+                    {title:'new2',content:'新闻er的内容'},
+                    {title:'new3',content:'新闻san的内容'},
+                ]
+            }
+        },
+        watch:{
+            data1(){
+                this.myfunction()
+
+            }
+        },
+        mounted(){
+            this.myfunction()
+        },
+        methods:{
+            myfunction(){
+
+
+                this.yemian =  this.newlist.filter(item=>{
+                    return item.title==this.data1;
+
+                })
+            },
+
+        },
+
+
+    });
+    // 注册朋友圈列表模块
+        Vue.component('firendlist',{
+            template:'<div><h1><center>朋友圈</center></h1><ul><li v-for="t in firendlist">{{t.name}}</li></ul></div>',
+            data(){
+                return {
+                        firendlist:[
+                            {name:'1'},
+                            {name:'2'},
+                            {name:'3'},
+                            {name:'4'},
+                            {name:'5'},
+                            {name:'6'},
+                            {name:'7'},
+                            {name:'8'},
+                            {name:'9'},
+                            {name:'10'},
+                            {name:'11'},
+                            {name:'12'},
+                        ]
+                }
+            }
+        })
+    // 首页内容
+    const indexhtml={
+        template:"<div><h3>主页内容</h3><p><router-link to='/index/zhuce'>注册</router-link> <router-link to='/index/login'>登录</router-link></router-link></p><router-view></router-view></div>"
+
+    }
+    // 新闻页面内容
+    const newhtml={
+        template:'<newstpl></newstpl>'
+
+    }
+    // 朋友圈页面内容
+    const firendhtml={
+        template:'<firendlist></firendlist>',
+
+
+    }
+    // 注册页面
+    const zhuce={
+        template:'<div>我是注册页面</div>'
+    }
+    // 登录页面
+    const login={
+        template:'<div>我是登录页面</div>'
+    }
+
+    // 声明路由器
+    const routes=[
+        {path:'/index',component:indexhtml,
+            children:[
+            {path:'zhuce',component:zhuce},
+            {path:'login',component:login},
+        ]
+        },
+        {path:'/news',component:newhtml,
+            children:[
+            {path:'/news/:id',component:{
+                template:'<contenttpl :data1="$route.params.id"></contenttpl>'
+            }}
+        ]
+        },
+        {path:'/friend',component:firendhtml},
+
+
+    ]
+    // 注册路由
+    const router = new VueRouter({
+        routes
+    })
+    // 绑定
+    let app = new Vue({
+        el:'#app',
+        router,
+        data: {
+            
+        }
+    })
+</script>
+</body>
+</html>

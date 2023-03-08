@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue 中的实例事件</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue 中的实例事件</h1>
+    <hr>
+    <div id="app">
+        <p>{{count}}</p>
+        <p><button @click="add">增加</button></p>
+    </div>
+    <p><button onclick="reduce()">减少</button></p>
+    <p><button onclick="reduceOnce()">只执行一次</button></p>
+    <p><button onclick="off()">关闭事件</button></p>
+    <script>
+
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                count: 1
+            },
+            methods: {
+                add () {
+                    this.count++
+                }
+            }
+        })
+        // $on 在构造器外部添加事件
+        /*
+            $on(event, claaback) 监听当前实例的自定义事件，事件可以由 $emit触发；
+            参数：
+                {string | Array<string>} event (数组只在 2.2.0+ 中支持)
+                {Function} callback
+            例子：
+                vm.$on('test', function (msg) {
+                    console.log(msg)
+                })
+                vm.$emit('test', 'hi') // 回调函数会接收所有传入事件触发函数的额外参数
+                // => "hi"
+        */
+        // $on 接收两个参数，第一个参数是调用时的事件名称，第二个参数是一个匿名方法
+        app.$on('reduce', function (msg) {
+            console.log('$on 在构造器外部添加的事件执行了！')
+            this.count--
+            console.log(msg) // 参数
+        })
+
+        function reduce () {
+            app.$emit('reduce', '参数')
+        }
+
+        // $once 执行一次的事件
+        /*
+            $once(event, callback) 监听一个自定义事件，但是支出法一次，在第一次触发之后移除监听器
+            参数：
+                {string} event
+                {Function} callback   
+        */
+        app.$once('reduceOnce', function(a, b) {
+            console.log('只执行一次的方法！')
+            this.count--;
+            console.log(a) // 1
+            console.log(b) // 2       
+        })
+        function reduceOnce () {
+            app.$emit('reduceOnce', '1', '2')
+        }
+
+        // $off 关闭事件
+        /*
+            $off([event, callback])
+            参数：
+                {string | Array<string>} event (只在 2.2.2+ 支持数组)
+                {Function} [callback]
+            用法: 
+                1. 如果没有提供参数，则移除所有的事件监听器
+                2. 如果只提供了事件，则移除该事件所有监听器
+                3. 如果同事提供了事件与回调，则只移除这个回调的监听器
+        */
+        function off () {
+            app.$off('reduce')
+            console.log('关闭事件！')
+        }        
+        
+    </script>
+</body>
+</html>

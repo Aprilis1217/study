@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-pre & v-cloak & v-once 指令</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-pre & v-cloak & v-once 指令</h1>
+    <hr>
+    <div id="app">
+        <!-- v-pre 指令 就是原样输出，vue 不进行渲染 -->
+        <p v-pre>{{message}}</p>
+        <!-- v-cloak 渲染完成后才显示 -->
+        <!-- 给闪烁的元素加上v-cloak指令 -->
+        <!-- 当vue实例结束编译之后（vue文件加载完成之后）， v-cloak会被删除-->
+        <p v-cloak>{{message}}---渲染完成后才显示</p>
+        <!-- v-once 只在第一次渲染时进行渲染 -->
+        <p v-once>{{message}}</p>
+        <p><input type="text" v-model="message"></p>
+        <p>{{message}}</p>
+
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World'
+            }
+        })
+    </script>
+</body>
+</html>

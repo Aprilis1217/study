@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue-router</title>
+    <script src="../assets/js/vue.js"></script>
+    <script src="../assets/js/vue-router.js"></script>
+</head>
+<body>
+    <h1>Vue-router</h1>
+    <hr>
+    <div id="app">
+        <router-link to="/index">首页</router-link>
+        <router-link to="/news">新闻</router-link>
+        <router-link to="/store">商品</router-link>
+        <!-- 挖个坑 -->
+        <router-view></router-view>
+    </div>
+
+    <script>
+        
+        const indexhtml = Vue.component('index', {
+            template: `
+                <div>
+                    <h3>主页内容</h3>
+                    <p><span><router-link to="/index/zhuce">注册</router-link></span><span><router-link to="/index/login">登录</router-link></span></p>
+                    <router-view></router-view>
+                </div>
+            `
+        })
+        const newshtml = Vue.component('news', {
+            template: `
+                <div>
+                    <h3>新闻页面</h3>
+                </div>
+            `
+        })
+        const storehtml = Vue.component('store', {
+            template: `
+                <div>
+                    <h3>商品页面</h3>    
+                </div>
+            `
+        })
+        const zhucehtml = Vue.component('zhuce', {
+            template: `<div>我是注册页面</div>`
+        })
+        const loginhtml = Vue.component('login', {
+            template: `<div>我是登录页面</div>`
+        })
+        // 声明路由
+        const router = new VueRouter({
+            routes: [
+                { path: '/index', component: indexhtml, children: [ {path: 'zhuce', component: zhucehtml}, {path: 'login', component: loginhtml} ] },
+                { path: '/news', component: newshtml },
+                { path: '/store', component: storehtml }
+            ]
+        })
+        
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            router,
+            data: {
+                message: 'Hello World'
+            }
+        })
+    </script>
+</body>
+</html>

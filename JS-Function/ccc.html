@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script>
+	// 实现js的继承
+	// 1 vdom diff 
+	// 2 lrucache (最近最少未使用算法)
+	// 3 dfs(深度优先搜索 + 回溯)
+    // 4. 实现一个Promise
+    // 5. Promise.all([p1, p2, p3]).then([r1, r2, r3]) 
+    // 
+
+    function getUser() {
+    	return new Promise((resolve, reject) => {
+    		fetch('https://yidian.com/getUser/aaa').then(response => {
+    			resolve(response)	
+    		})
+    	})
+    }
+
+   // p1 p2 p3 //  [data2, data1, data3]
+    Promise.all = function(promises) {
+    	return new Promise((resolve, reject) => {
+    		const result = []
+    		promises.forEach((p, index) => {
+    		   p.then(data => {
+	    		   	result[index] = data
+	    		   	if (result.length === promises.length) {
+	    		   	    resolve(result)
+	    		   }
+    		   }, error => {
+    		   	   reject(error)
+    		   })
+    		   
+    		})
+    	});
+    }
+
+    Promise.waterfall = function (promises) {
+    	return new Promise((resolve, reject) => {
+           const result = []
+           function next(index) {
+           	  if (index >= promises.length) {
+           	  	resolve(result)
+           	  }
+           	  promises[index].then(data => {
+           	  	result.push(data)
+           	  	next(index+1)
+           	  })
+           }
+           next(0)
+    	})
+    }
+
+
+    function errorAfterTimeout(timeout) {
+    	return new Promise((resolre, reject) => {
+    		setTimeout(() => {
+    			resolve('error')
+    		}, timeout)
+    	})
+    }
+
+    Promise.race([getUser(), errorAfterTimeout(3000)]).then(data).then(data => {
+    	if (data === 'error') {
+    		renderErrorPage()
+    	} else {
+    		renderUserPage()
+    	}
+    })
+</script>
+</html>

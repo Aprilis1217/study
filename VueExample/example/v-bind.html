@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-bind 标签属性绑定</title>
+    <style>
+        .classA {
+            color: red;
+        }
+        .classB {
+            font-size: 20px;
+        }
+    </style>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-bind 标签属性绑定</h1>
+    <hr>
+    <div id="app">
+        <p><img v-bind:src="imgUrl" alt="帮帮帮" width="300"></p>
+        <p><a :href="webUrl" target="_blank">技术胖的博客</a></p>
+        <hr>
+        <div :class="className">1、绑定Class</div>
+        <div :class="{classB: isOK}">2、绑定Class中的判断</div>
+        <div :class="[classA, classB]">3、绑定Class中的数组</div>
+        <div :class="isOK ? classA : classB">4、绑定Class中的三元运算符</div>
+        <hr>
+        <div>
+            <input type="checkbox" id="isOK" v-model="isOK">
+            <label for="isOK">isOK = {{isOK}}</label>
+        </div>
+        <hr>
+        <div :style="{color: red, fontSize: font}">5、绑定Style</div>
+        <div :style="styleObject">6、对象绑定Style</div>
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                imgUrl: 'https://yhb-app-upload.oss-cn-beijing.aliyuncs.com/banner.png',
+                webUrl: 'http://jspang.com',
+                className: 'classA',
+                isOK: true,
+                classA: 'classA',
+                classB: 'classB',
+                color: 'red',
+                font: '150%',
+                styleObject: {
+                    color: 'green',
+                    fontSize: '30px'
+                }
+            }
+        })
+    </script>
+</body>
+</html>

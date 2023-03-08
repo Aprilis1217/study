@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Template 模板</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Template 模板</h1>
+    <hr>
+    <div id="app">
+        {{message}}
+    </div>
+    <template id="temp">
+        <h3 style="color: blue">template 标签模板-----推荐使用</h3>
+    </template>
+    <script type="x-template" id="template">
+        <h3 style="color: green">script 标签模板-----不推荐使用</h3>
+
+    </script>
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World'
+            },
+            template: `
+                <h3 style="color: red">选项模板-----不推荐使用</h3>
+            `,
+            template: '#temp',
+            // template: '#template'
+        })
+    </script>
+</body>
+</html>

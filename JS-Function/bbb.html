@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		p {
+			width: 300px;
+			text-align: left;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 3;
+			overflow: hidden;
+			padding: 20px 10px;
+			background-color: #808080;
+			color: aliceblue;
+		}
+	</style>
+</head>
+<body>
+	<p>
+		How do I manage verified tables and mapping when I need to verify the fields my upload data or do tables mapping?
+	</p>
+	<div class="left_video">
+		<video id="leftVideo" playsinline controls autoplay muted loop="loop" style="width: 300px; height: 200px">
+			<source src="http://edge.ivideo.sina.com.cn/34156365503.mp4?KID=sina,viask&Expires=1593532800&ssig=0ggKCBEjys&reqid=" type="video/mp4"></source>
+			This browser doesn't support the video element.
+		</video>
+	</div>	
+</body>
+<script>
+	// [1, 2, [3, 4, 5, [6, 7, 8], 9]] => [1, 2, 3, 4, 5, 6, 8, 9] // kuiashou
+	var arr = [1, 2, [3, 4, 5, [6, 7, 8], 9]];
+	var newArr = [];
+	function duplicates(arr) {
+		return arr.sort((a, b) => {
+			return a - b;
+		}).filter((item, i) => {
+		// 判断是否是第一个出现，且不是最后一个出现
+			return arr[i] === arr[i + 1] && arr[i] !== arr[i - 1]
+		})
+	}
+	
+	console.log(duplicates([1, 2, 4, 4, 3, 3, 1, 5, 3]))
+	let result = []
+	const flatten = (arr) => {
+		for (let i = 0; i < arr.length; i++) {
+			let item = arr[i]
+			if (Array.isArray(item)) {
+				flatten(item)
+			} else {
+				result.push(item)
+			}
+		}
+		return result
+	}
+	console.log(flatten(arr))
+	// function duplicates(arr) {
+	// 	var exist = {};
+	// 	var result = [];
+	// 	for (var i = 0; i < arr.length; i++) {
+	// 		var element = arr[i];
+	// 		if (exist[element] && result.indexOf(element) === -1) {
+	// 		result.push(element);
+	// 		} else {
+	// 		exist[element] = true;
+	// 		}
+	// 	}
+	// 	return result;
+	// }
+		// Promise 实现了链式调用，也就是说每次调用 then 之后返回的都是一个 Promise，并且是一个全新的 Promise，原因也是因为状态不可变。如果你在 then 中 使用了 return，那么 return 的值会被 Promise.resolve() 包装
+		// new Promise.resolve(1)
+		// .then(res => {
+		// 	console.log(res) // => 1
+		// 	return 2 // 包装成 Promise.resolve(2)
+		// })
+		// .then(res => {
+		// 	console.log(res) // => 2
+		// })
+</script>
+</html>

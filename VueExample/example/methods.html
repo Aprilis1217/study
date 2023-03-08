@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Methods Option</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Methods Option</h1>
+    <hr>
+    <div id="app">
+        <p>{{count}}</p>
+        <p><button @click="add(3, $event)">ADD</button></p>    
+        <p><fengyi @click.native="add(5, $event)"></fengyi></p>
+    </div>
+    
+    <p><button onclick="app.add(9)">外部ADD---外部调用构造器里的方法</button></p>
+    <script>
+        let fengyi = {
+            template: `<button>组件ADD</button>`
+        }
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                count: 1
+            },
+            components: { // 挂载定义的组件 fengyi
+                'fengyi': fengyi
+            },
+            methods: {
+                add (num, event) {
+                    if (num != '') {
+                        this.count += num
+                    } else {
+                        this.count++
+                    }
+                    console.log(event)
+                }
+            }
+        })
+    </script>
+</body>
+</html>

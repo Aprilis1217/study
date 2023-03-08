@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 在创建一个函数时， JavaScript 对该函数原型的初始化代码
+    // 实际代码
+    function fn () {}
+
+    // JavaScript 自动执行
+    fn.prototype = {
+      constructor: fn,
+      __proto__: Object.prototype
+    }
+    fn.__proto__ = Function.prototype
+
+    
+
+    // 1. 实现一个 call 函数
+    Function.prototype.myCall = function (context, ...params) {
+      if (typeof context === 'object' || typeof context === 'function') {
+        context = context || window
+      } else {
+        context = Object.create(null)
+      }
+      let fn = Symbol('fn') // 利用 Symbol 的唯一性生成一个不重复的键
+      context[fn] = this
+      let result = context[fn](...params) // 重点代码，利用this指向
+      delete context[fn]
+      return result
+    }
+
+    // 2. 实现一个 apply 函数
+    Function.prototype.myApply = function (context, params) {
+      if (typeof context === 'object' || typeof context === 'function') {
+        context = context || window
+      } else {
+        context = Object.create(null)
+      }
+      let fn = Symbol('fn')
+      context[fn] = this
+      let result = context[fn](...params)
+      delete context[fn]
+      return result
+    }
+    let person = {
+      name: 'Abiel'
+    }
+    function sayHi (age,sex) {
+      console.log(this.name, age, sex);
+    }
+    sayHi.myCall (person, 25, '男'); // Abiel 25 男
+    sayHi.myApply (person, [24, '男11']); // Abiel 24 男11
+
+    // 3. 实现一个 bind 函数
+    // Function.prototype.myBind = function (context, ...innerArgs) {
+    //   let ownThis = this
+    //   return function (...finnalyArgs) {
+    //     return ownThis.call(context, ...innerArgs, ...finnalyArgs)
+    //   }
+    // }
+    Function.prototype.myBind = function(context, ...args) {
+      let self = this // 谨记this表示调用bind的函数
+      let bindFn = function (...newArgs) {
+          // this instanceof bindFn 为 true 表示构造函数的情况。如 new func.bind(obj)
+          return self.call(this instanceof bindFn ? this : context || window, ...args, ...newArgs);
+      }
+      bindFn.prototype = Object.create(self.prototype) // 保证原函数的原型对象上的属性不丢失
+      return bindFn
+    }
+
+    let object = {
+      name: 'Abiel'
+    }
+    function sayHi(age,sex) {
+      console.log(this.name, age, sex);
+    }
+    let personSayHi = sayHi.myBind(object, 25)
+    personSayHi('男')
+    // call、apply、bind 三者的区别：
+    // 都是改变 this 的指向，区别主要是在实现形式和参数传递上的不同
+    // call、apply 都是在调用后立即执行，而 bind 调用之后是返回原函数，需要再调用一次才行
+    /**
+     * 1. fn.call(对象, arg1, arg2...)
+     * 2. fn.apply(对象, [arg1, arg2...])
+     * 3. const Temp = fn.bind(对象, arg1, arg2...)
+     * 第一个参数：都是指定函数内部中 this 的指向(函数执行时所在的作用域)，然后根据指定的作用域调用该函数
+     * 都可以在函数调用时传递参数，call 和 bind 方法需要直接传入，apply 方法需要以数组的形式传入
+     * call、apply 都是在调用后立即执行，而 bind 调用之后是返回原函数，需要再调用一次才行
+     **/
+    // ============================================================================================
+
+    /**
+     * new 操作符做了什么？
+     * 1. 创建一个新的空对象
+     * 2. 将对象连接到构造函数的原型上，并绑定 this
+     * 3. 执行构造函数代码
+     * 4. 返回新对象
+    */
+    // 4. 实现 new 关键字
+    function myNew (Con, ...args) {
+      let obj = {}
+      // obj.__proto__ = Con.prototype // ES5
+      Object.setPrototypeOf(obj, Con.prototype) // ES6
+      let result = Con.apply(obj, args)
+      return result instanceof Object ? reslut : obj
+    }
+    function Test (name, age) {
+      this.name = name
+      this.age = age
+    }
+    Test.prototype.sayHi = function () {
+      console.log('Test-----实现 new 关键字')
+    }
+    const test = myNew(Test, '测试', 18)
+    console.log(test.name) // 测试
+    console.log(test.age) // 18
+    test.sayHi() // Test-----实现 new 关键字
+
+    // 5. 实现 Object.create() 方法
+    function create (proto) {
+      function Fn () {}
+      Fn.prototype = proto
+      Fn.prototype.constructor = Fn
+      
+      return new Fn()
+    }
+
+    // 6. 实现 instanceof 方法
+    function myInstanceof (left, right) {
+      // let proto = Object.getPrototypeOf(left)
+      // while (true) {
+      //   if (proto == null) return false
+      //   if (proto == right.prototype) return true
+      //   proto = Object.getPrototypeOf(prpto)
+      // }
+      let prototype = right.prototype // 获取类型的原型
+      // let proto = left.__proto__ // 获取对象的原型
+      let proto = Object.getPrototypeOf(left) // 获取对象的原型
+      while (true) {
+        if (proto === null || proto === undefined) return false
+        if (prototype === proto) return true
+        proto = proto.__proto__
+      }
+    }
+
+    // 7. 实现节流函数 ---> 事件触发后每隔一段时间触发一次，可多次触发
+    // 如果在定时器的时间范围内再次触发，则不予理睬，等当前定时器完成，才能启动下一个定时器
+    // 应用：scroll, resize 事件一段时间触发多次
+    const throttle = (fn, delay = 500) => { // 每隔一段时间触发一次，像水滴一样
+      let flag = true
+      return (...args) => {
+        if (!flag) return
+        flag = false
+        setTimeout(() => {
+          fn.apply(this, args)
+          flag = true
+        }, delay)
+      }
+    }
+
+    // 8. 实现防抖功能 ---> 事件触发动作完成后的一段时间触发一次
+    // 如果在定时器的时间范围内再次触发，则重新计时。
+    const debounce = (fn, delay = 500) => { // 结束时触发一次，延时执行
+      let timer = null
+      return (...args) => {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          fn.apply(this, args)
+        }, delay)
+      }
+    }
+
+    // 9. 单列模式 ---> 通过 ES6 的 Proxy 拦截构造函数的执行方法来实现的单列模式
+    // 用闭包和Proxy属性拦截
+    function proxy (fn) {
+      let instance
+      let handler = {
+        construct(target, args) {
+          if (!instance) {
+            instance = Reflect.construct(fn, args)
+          }
+          return instance
+        }
+      }
+      return new Proxy(fn, handler)
+    }
+
+    // 10. 数组扁平化 flat 方法
+    let array = [1, [2, [3, [4, 5]]], 6]
+    let str = JSON.stringify(array)
+
+    // A. 正则表达式处理
+    let flattenArr = str.replace(/(\[|\])/g, '').split(',').map(Number)
+    console.log(flattenArr, '正则表达式')
+    // B. ES10 数组 flat 方法
+    let arr_flat = array.flat(Infinity)
+    console.log(arr_flat, 'ES10 数组 flat 方法')
+    // C. 递归处理
+    let result = []
+    const flatten = (arr) => {
+      for (let i = 0; i < arr.length; i++) {
+        let item = arr[i]
+        if (Array.isArray(item)) {
+          flatten(item)
+        } else {
+          result.push(item)
+        }
+      }
+      return result
+    }
+    console.log(flatten(array), '递归处理')
+
+    // 11. 对象的拷贝
+    // A. Object.assign() ---> 浅拷贝
+    let target = {}
+    let sources = {
+      a: { aa: 1},
+      b: function () {},
+      c: null,
+      d: undefined,
+      e: NaN,
+      sym: Symbol(1)
+    }
+    Object.defineProperty(sources, 'innumerable', { value: '不可枚举属性', enumerable: false })
+    sources.a.aa = 1217
+    Object.assign(target, sources)
+
+    console.log('Object.assign-----sources: ', sources)
+    console.log('Object.assign-----target: ', target)
+
+    // B. 扩展运算符
+    let obj1 = {
+      a: { aa: 1},
+      b: function () {},
+      c: null,
+      d: undefined,
+      e: NaN,
+      sym: Symbol(1) 
+    }
+    Object.defineProperty(obj1, 'innumerable', { value: '不可枚举属性', enumerable: false })
+    obj1.a.aa = '1226'
+    let  obj2 = { ...obj1 }
+    console.log('扩展运算符-----obj1: ', obj1)
+    console.log('扩展运算符-----obj2: ', obj2)
+
+
+    // 深拷贝封装
+    // 1. 封装函数判断 obj 的类型
+    const isObjectType = obj => {
+      return obj !== null && (typeof obj === 'object' || typeof obj === 'function')
+    }
+    const deepClone = (obj, hash = new WeakMap()) => {
+      // 2. 如果 obj 是日起对象就返回一个新的日期对象
+      if (obj.constructor === Date) return new Date(obj)
+      // 3. 若果 obj 是正则对象就返回一个新的正则对象
+      if (obj.constructor === RegExp) return new RegExp(obj)
+      // 4. 如果成环了，参数 obj = obj.loop = 最初的 obj 会在 weakMap 中知道到第一次放入的 obj 提前返回第一次放入的 WeakMap 的 cloneObj
+      if (hash.has(obj)) return hash.get(obj)
+      // 5. 遍历传入参数所有键的特性
+      let allKeyDesc = Object.getOwnPropertyDescriptors(obj)
+      // 6. 继承原型链
+      let cloneObj = Object.create(Object.getPrototypeOf(obj), allKeyDesc)
+      
+      hash.set(obj, cloneObj)
+
+      for (let key of Reflect.ownKeys(obj)) {
+        // Reflect.ownKeys(obj)可以拷贝不可枚举属性和符号类型
+        // 如果值是引用类型(非函数)则递归调用deepClone
+        cloneObj[key] = isObjectType(obj[key]) && typeof obj[key] !== 'function' ? deepClone(obj[key], hash) : obj[key]
+      }
+      return cloneObj
+    }
+
+    let obj = {
+      num: 0,
+      str: "",
+      boolean: true,
+      unf: undefined,
+      nul: null,
+      obj: {
+        name: "我是一个对象",
+        id: 1
+      },
+      arr: [0, 1, 2],
+      func: function() {
+        console.log("我是一个函数");
+      },
+      date: new Date(0),
+      reg: new RegExp("/我是一个正则/ig"),
+      [Symbol("1")]: 1
+    }
+    Object.defineProperty(obj, "innumerable", {
+      enumerable: false,
+      value: "不可枚举属性"
+    })
+    obj = Object.create(obj, Object.getOwnPropertyDescriptors(obj))
+
+    obj.loop = obj
+
+    let cloneObj = deepClone(obj)
+
+    console.log("obj", obj)
+    console.log("cloneObj", cloneObj)
+
+    for (let key of Object.keys(cloneObj)) {
+      if (
+        typeof cloneObj[key] === "object" ||
+        typeof cloneObj[key] === "function"
+      ) {
+        console.log(`${key}相同吗？ `, cloneObj[key] === obj[key]);
+      }
+    }
+
+    // JS 继承
+    /**
+    * A. 原型链继承
+    * 重点：让新实例的原型等于父类的实例.
+    * 特点：实例可继承的属性有：实例的构造函数的属性，父类构造函数属性，父类原型的属性。（新实例不会继承父类实例的属性）
+    * 缺点：
+    * 1、新实例无法向父类构造函数传参
+    * 2、继承单一
+    * 3、所有新实例都会共享父类实例的属性（原型上的属性是共享的，一个实例修改了原型属性，另一个实例的原型属性也会被修改）
+    **/
+    // ? 父类型
+    function Person (name, age) {
+      this.name = name
+    }
+    Person.prototype.age = 18; // 给构造函数添加了原型属性
+    Person.prototype.sayHi = function () {
+      console.log('Person 父类型', this.name)
+    }
+    // ? 子类型
+    function Student () {
+      this.name = 'Jack'
+    }
+    // 将 Student 的原型指向 Person 的实例
+    Student.prototype = new Person() // 重点
+    // 注意点：将 Student 新的prototype对象加上constructor属性，并将这个属性指回原来的构造函数
+    Student.prototype.constructor = Student
+    const student = new Student()
+    student.sayHi() // Person 父类型 Jack
+    console.log(student.name) // Jack
+    console.log(student.age) // 18
+    console.log(myInstanceof(student, Person)) // true
+
+    /**
+    * B. 构造继承
+    * 重点：在子类的内部调用父类，通过 call 或 apply 改变父类中 this 的指向（在子类函数中做了父类函数的自执行（复制））
+    * 特点：
+    * 1、只继承了父类构造函数的属性，没有继承父类原型的属性。
+    * 2、解决了原型链继承缺点1、2、3。
+    * 3、可以继承多个构造函数属性（call多个）。
+    * 4、在子实例中可向父实例传参。
+    * 缺点：
+    * 1、只能继承父类构造函数的属性。
+    * 2、无法实现构造函数的复用。（每次用每次都要重新调用）
+    * 3、每个新实例都有父类构造函数的副本，臃肿
+    **/
+    // 构造器
+    function Animal (name, age) {
+      this.name = name
+      this.age = age
+    }
+    Animal.prototype.eat = function () {
+      console.log('Animal 构造器', this.name)
+    }
+    function Cat (name, age, sex) {
+      // 重点
+      Animal.call(this, name, age)
+      this.sex = sex
+    }
+    const cat = new Cat('小猫', 3, '公猫')
+    // cat.eat() // 报错 cat.eat is not a function
+    console.log(cat.name) // 小猫
+    console.log(cat.age) // 3
+    console.log(cat.sex) // 公猫
+    console.log(cat instanceof Animal) // false
+    console.log(cat instanceof Cat) // true
+
+    /**
+    * C. 组合继承（原型链 + 构造函数）
+    * 重点：结合了两种模式的优点，传参和复用
+    * 特点：
+    * 1、可以继承父类原型上的属性，可以传参，可复用。
+    * 2、每个新实例引入的构造函数属性是私有的。
+    * 缺点：调用了两次父类构造函数（耗内存），子类的构造函数会代替原型上的那个父类构造函数。
+    **/
+    function Father (name, age) {
+      this.name = name
+      this.age = age
+    }
+    Father.prototype.sayHi = function () {
+      console.log('组合继承', this.name)
+    }
+    function Son (name='xiaoyi', age=27) {
+      // 构造函数继承
+      Father.apply(this, [name, age])
+    }
+    Son.prototype = new Father() // 原型链继承
+    Son.prototype.constructor = Son
+    const son = new Son()
+    son.sayHi() // 组合继承 xiaoyi
+    console.log(son.name) // xiaoyi
+    console.log(son.age) // 27
+    console.log(son instanceof Father) // true
+    console.log(son instanceof Son) // true
+
+    /**
+     * D. 原型式继承
+     * 重点：利用 Object.create() 原理
+     * 特点：类似于复制一个对象，用函数来包装
+     * 缺点：
+     * 1. 所有实例都会继承原型上的属性
+     * 2. 无法实现复用（新实例属性都是后面添加的）
+     * **/
+    function content (obj) {
+      function Fn () {}
+      Fn.prototype = obj // 继承传入的参数
+      Fn.prototype.constructor = Fn
+      return new Fn() // 返回函数对象
+    }
+    let sup = new Person() // 拿到父类的实例
+    let instance = content(sup)
+    console.log(instance.age, '原型式继承')
+
+    /**
+     * E. 寄生继承
+     * 
+     * 
+     * **/
+  </script>
+</body>
+</html>

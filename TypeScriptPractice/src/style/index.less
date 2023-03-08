@@ -1,0 +1,69 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body{}
+h3{
+  margin-top: 100px;
+  text-align: center;
+}
+#main{
+  width: 360px;
+  height: 420px;
+  background-color: #b7d4a8;
+  border: 10px solid #000;
+  border-radius: 20px;
+  margin: 100px auto;
+  // flex 弹性盒子
+  display: flex;
+  // 设置主轴方向
+  flex-flow: column;
+  // 设置辅轴的对齐方式
+  align-items: center;
+  // 设置主轴的对齐方式
+  justify-content: space-around;
+  #stage{
+    width: 304px;
+    height: 304px;
+    border: 2px solid #000;
+    position: relative;
+    #snake{
+      &>div{
+        width: 10px;
+        height: 10px;
+         background-color: #000;
+        border: 1px solid #b7d4a8;
+        position: absolute;
+        left: 20px;
+        top: 30px;
+      }
+    }
+    #food{
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      top: 200px;
+      left: 150px;
+      display: flex;
+      // 设置横轴为主轴 wrap 自动换行
+      flex-flow: row wrap;
+      justify-content: space-between;
+      align-content: space-between;
+      transform: rotate(45deg);
+      &>div{
+        width: 4px;
+        height: 4px;
+        background-color: #000;
+        border-radius: 1px;
+      }
+    }
+  }
+  #score-panel{
+    width: 300px;
+    height: 30px;
+    display: flex;
+    // 设置主轴对齐方式
+    justify-content: space-between;
+  }
+}

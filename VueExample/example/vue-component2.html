@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Component 组件</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Component 组件</h1>
+    <hr>
+    <div id="app">
+        <feng></feng>
+        <hr>
+        <yi></yi>
+    </div>
+
+    <script>
+        // 定义全局组件
+        Vue.component('feng', {
+            template: `<h3 style="color: red">注册全局的 feng 组件</h3>`
+        })
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World'
+            },
+            components: { // 定义局部组件
+                'yi': {
+                    template: `<h3 style="color: green">注册局部的 yi 组件</h3>`
+                }
+            }
+        })
+        // 组件和指令的区别：组件注册的是一个标签，而指令注册的是已有标签的一个属性
+    </script>
+</body>
+</html>

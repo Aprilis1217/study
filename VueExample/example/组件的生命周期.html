@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../assets/js/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <p>{{info}}</p>
+      <button @click="info='hello world'">更新info</button>
+      <button @click="destroy">销毁实例</button>
+    </div>
+
+    <script>
+      let vm = new Vue({
+        el: "#app",
+        data: {
+          info: "hello",
+        },
+
+        // 在实例初始化之前，数据观测(data observer) 和 event/watch 配置之前被调用
+        beforeCreate() {
+          console.log(
+            "==============================beforeCreate=========================="
+          );
+          // $el 表示 Vue 实例使用的根 DOM 元素
+          console.log("$el", this.$el);
+          // $data 表示 Vue 实例观察的数据对象
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        // 在实例创建完成后被立即调用。在这一步，实例已完成一下的配置：数据观测(data observer)，属性和方法的运算，watch/event 时间回调。然后，挂载阶段还没开始，dom还未生成，$el 属性目前不可见
+        created() {
+          console.log(
+            "================================created=============================="
+          );
+          console.log("$el", this.$el);
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        // 模板编译挂载之前调用，首先会判断对象是否有 el 选项。如果有的话继续向下编译，接着判断是否有 template 属性，有的话就以 template 属性中的值作为模板，如果没有的话就以 el 属性指向的作为模板(这里会生成 vm.$el, 但指令尚未被解析)；如果没有 el 选项，则停止编译，也就意味着停止了生命周期，直到在该 vue 实例上调用 vm.$mount(el)。
+        beforeMount() {
+          console.log(
+            "=================================beforeMount==========================="
+          );
+          console.log("$el", this.$el);
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        // 模板编译挂载之后调用，vm.$el 替换掉 el 指向的 dom
+        mounted() {
+          console.log(
+            "=================================mounted================================"
+          );
+          console.log("$el", this.$el);
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        // 数据变更导致虚拟DOM重新渲染之前调用
+        beforeUpdate() {
+          console.log(
+            "=================================beforeUpdate============================"
+          );
+        },
+        // 数据变更导致虚拟DOM重新渲染之后调用
+        updated() {
+          console.log(
+            "=================================update=================================="
+          );
+        },
+        // 实例销毁之前调用，在这一步，实例完全可用
+        beforeDestroy() {
+          console.log(
+            "=================================beforeDestroy==========================="
+          );
+          console.log("$el", this.$el);
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        // vue 实例指向的所有的东西解除绑定，包括 watcher、事件、所有的子组件，后续就不在受 vue 实例的控制
+        destroyed() {
+          console.log(
+            "=================================destroyed================================"
+          );
+          console.log("$el", this.$el);
+          console.log("$data", this.$data);
+          console.log("info", this.info);
+        },
+        methods: {
+          destroy() {
+            this.$destroy();
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

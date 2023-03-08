@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue 中的 $emit 事件</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue 中的 $emit 事件</h1>
+    <hr>
+    <div id="app">
+        {{msg}}
+        <!-- 组件 -->
+        <fengyi @event="sayHi"></fengyi>
+    </div>
+
+    <script>
+        // 定义一个全局组件
+        Vue.component('fengyi', {
+            template: `
+                <p><button @click="love">$emit 事件</button></p>
+            `,
+            data () {
+                return {
+                    array: ['12', 17, 'huibao']
+                }
+            },
+            methods: {
+                love () {
+                    this.$emit('event', this.array[2])
+                }
+            }
+        })
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                msg: 'Hello World'
+            },
+            methods: {
+                sayHi (value) {
+                    console.log('传过来的值-----' + value)
+                }
+            },
+        })
+        
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 最大值
+        Array.prototype.max = function () { 
+            return Math.max.apply(null, this)
+        }
+        // 最小值
+        Array.prototype.min = function () { 
+            return Math.min.apply(null, this)
+        }
+
+        // ES6 扩展运算符
+        let arr = [10, 21, 22, 11, 1217]
+        let max = Math.max(...arr)
+        let min = Math.min(...arr)
+        console.log(max, '---', min)
+    </script>
+</body>
+</html>

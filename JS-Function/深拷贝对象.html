@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        
+        // 递归拷贝
+        function cloneObj1 (obj) {
+            var newObj1 = obj.constructor === Array ? [] : {};
+            for (var key in obj) {
+                newObj1[key] = typeof obj[key] === 'Object' ? cloneObj1(obj[key]) : obj[key];
+            }
+            return obj;
+        }
+        console.log(cloneObj1({
+            data: {
+                message: 'hello world',
+                name: '慧宝',
+                age: 18
+            }
+        }))
+
+        // 最常用
+        // 利用 json 对象转化为字符串的方法
+        function cloneObj2 (obj) {
+            return JSON.stringify(obj);
+        }
+        console.log(cloneObj2({
+            data: {
+                name: '慧宝',
+                age: 18,
+                job: 'teacher',
+                a: null,
+                b: function() {},
+                c: NaN,
+                d: Symbol
+            }
+        }))
+        
+
+        // ==============================深拷贝===========================
+
+        // 返回传递给它的任意对象的类
+        const isClass = (obj) => {
+            if (obj === null) {
+                return 'Null';
+            }
+            if (obj === undefined) {
+                return 'Undefined';
+            }
+            return Object.prototype.toString.call(obj).slice(8, -1);
+        }
+        let array = [];
+        console.log(isClass(array))
+
+        // 深度克隆
+        const deepClone = (obj) => {
+            if (!obj) {
+                return null;
+            }
+            let result, oClass = isClass(obj);
+            // 确定 result 的类别
+            if (oClass === 'Object') {
+                result = {}
+            } else if (oClass === 'Array') {
+                result = []
+            } else {
+                return obj;
+            }
+            for (let key in obj) {
+                // hasOwnProperty() 方法会返回一个布尔值，指示对象自身属性中是否有指定的属性
+                if (obj.hasOwnProperty(key)) {
+                    let copy = obj[key];
+                    if (isClass(copy) === 'Object') {
+                        result[key] = deepClone(copy); // 递归调用
+                    } else if (isClass(copy) === 'Array') {
+                        result[key] = deepClone(copy);
+                    } else {
+                        result[key] = obj[key];
+                    }
+                }
+            }
+            return result;
+        }
+        console.log(deepClone({name: '慧宝', age: 18}))
+    </script>
+</body>
+</html>
+
+<script>
+    // 浅拷贝
+    // Object.assign() ES6中拷贝对象的方法，接受的第一个参数是拷贝的目标，剩下的参数是拷贝的源对象(可以是多个)
+    let target = {}
+    let source = {a: 1, b: [2, 3, 4, 5]}
+    Object.assign(target, source)
+    console.log(target, 'target') // {a: 1}
+    source.a = 2
+    console.log(target, '---', source) // {a: 1} --- {a: 2}
+    // Object.assign 是一个浅拷贝，它只是在 根属性(对象的第一层) 创建一个新的对象，但对于属性的值是对象对象的话只会拷贝一份相同的内存地址
+    source.b[0] = 0 // 改变之后，所有的 b[0] 值都被改变
+    Object.assign(target, source)
+    console.log(target, 'target') // {a: 1, b: [0, 3, 4, 5]}
+    console.log(source, 'source') // {a: 2, b: [0, 3, 4, 5]}
+    /**
+     * Object.assign() 注意点：
+     * 1. 不能拷贝对象继承的属性
+     * 2. 不能拷贝不可枚举的属性
+     * 3. 属性的数据属性、访问器属性
+     * 4. 可以拷贝 Symbol 类型
+    */
+    let targetObj = {}
+    let sourceObj = {
+        a: {
+            aa: 1
+        },
+        b: function () {},
+        c: null,
+        d: undefined,
+        e: NaN,
+        sym: Symbol(1)
+    }
+    Object.defineProperty(sourceObj, 'innumerable', {
+        value: '不可枚举属性',
+        enumerable: false
+    })
+    Object.assign(targetObj, sourceObj)
+    sourceObj.a.aa = 2
+    console.log('sourceObj---Object.assign', sourceObj) // {a: {…}, b: ƒ, c: null, d: undefined, e: NaN, …}
+    // a: {aa: 2}
+    // b: ƒ ()
+    // c: null
+    // d: undefined
+    // e: NaN
+    // sym: Symbol(1)
+    // innumerable: "不可枚举属性"
+    // __proto__: Object
+    console.log('targetObj---Object.assign', targetObj)
+    // a: {aa: 2}
+    // b: ƒ ()
+    // c: null
+    // d: undefined
+    // e: NaN
+    // sym: Symbol(1)
+
+    // 扩展运算符
+    let obj2 = {...sourceObj}
+    console.log('obj2', obj2)
+    // 扩展运算符和 Object.assign 有着同样的缺陷
+
+    // 将类数组转化为数组
+    let likeArr = {0: 'aaa', length: 1}
+    let arr1 = Array.from(likeArr)
+    console.log(arr1, 'arr1') // ['aaa']
+    let arr2 = Array.prototype.slice.call(likeArr)
+    console.log(arr2, 'arr2') // ['aaa']
+    console.log(Array.isArray(likeArr)) // Array.isArray() 判断是否是数组
+    console.log(Array.isArray(arr1)) // true
+    // 深拷贝
+    // 通过 JSON.stringfy() 实现简单的深拷贝
+    let obj3 = {
+        a: {
+            aa: 1
+        },
+        b: function () {},
+        c: null,
+        d: undefined,
+        e: NaN,
+        f: [2, 3, 4, 5],
+        g: new Date(),
+        h: new RegExp(),
+        sym: Symbol(1)
+    }
+    Object.defineProperty(obj3, 'innumerable', {
+        value: '不可枚举属性',
+        enumerable:false
+    })
+    console.log('obj3', obj3)
+    // a: {aa: 1}
+    // b: ƒ ()
+    // c: null
+    // d: undefined
+    // e: NaN
+    // f: (4) [2, 3, 4, 5]
+    // g: Fri Aug 16 2019 20:06:41 GMT+0800 (中国标准时间) {}
+    // h: /(?:)/
+    // sym: Symbol(1)
+    // innumerable: "不可枚举属性"
+    // __proto__: Object
+    let str = JSON.stringify(obj3)
+    let obj4 = JSON.parse(str)
+    console.log('obj4', obj4)
+    // a: {aa: 1}
+    // c: null
+    // e: null
+    // f: (4) [2, 3, 4, 5]
+    // g: "2019-08-16T12:06:41.516Z"
+    // h: {}
+    // __proto__: Object
+
+    /**
+     * JSON.stringfy() 实现深拷贝的注意点:
+     * 1. 拷贝对象的值中如果有 函数、undefined、symbol 经过 JSON.stringfy() 序列化后的 JSON 字符串中的这个键值对会消失
+     * 2. 无法拷贝不可枚举的属性，无法拷贝对象的原型链
+     * 3. 拷贝 Date 引用类型会转变成字符串
+     * 4. 拷贝 RegExp 引用类型会变成空对象
+     * 5. 对象中包含有 NaN、Infinity 、-Infinity 序列化后的结果会变成 null
+     * 6. 无法拷贝对象的循环应用 (obj[key] = obj)
+    */
+    
+</script>

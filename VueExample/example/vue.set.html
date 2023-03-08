@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue.set 全局操作</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue.set 全局操作</h1>
+    <!-- 
+        Vue.set(target, key, value) 作用就是在构造器外部操作构造器内部的数据、属性或者方法
+        参数： target 可以使对象或者数组，key 可以是字符串或是数字，value 可以是任何值
+        由于 JavaScript 的限制，Vue 不能自动检测以下变动的数组：
+        1. 当你利用索引值直接设置一个项时，vue 不会为我们自动更新
+        2. 当你修改数组的长度时，vue 不会为我们自动更新
+     -->
+    <hr>
+    <div id="app">
+        <p>{{count}}</p>
+        <ul>
+            <li v-for="(item,index) in array">{{item}}</li>
+        </ul>
+    </div>
+    <p><button onclick="change()">加法</button></p> 
+    <script>
+        function change () {
+            // console.log(123)
+            // Vue.set(outData, 'count', 2); // 让这个值变为 2
+            // app.count++; // 利用 Vue 对象的方法操作数据
+            // outData.count++; // 直接操作外部数据
+            app.array[1] = 'DDD'
+            Vue.set(app.array, 1, 'EEE')
+        }
+        let outData = {
+            count: 1,
+            goods: 'car',
+            array: ['aaa', 'bbb', 'ccc']
+        }
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: outData
+        })
+    </script>
+</body>
+</html>

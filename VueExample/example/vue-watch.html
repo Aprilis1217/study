@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Watch 侦听器</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Watch 侦听器</h1>
+    <!-- watch 侦听器用来监听 data 中数据的值，只要监听的数据发生变化，就会执行相对应的函数 -->
+    <!-- $watch 用于观察 Vue 实例上的数据变动 -->
+    <hr>
+    <div id="app">
+        <!-- autofocus 属性是用来自动获取焦点 -->
+        <input type="text" autofocus v-model="firstName">
+        <input type="text" v-model="lasttName">
+        <p>全名：{{fullName}}</p>
+        <hr>
+        <h3>深度侦听</h3>
+        <input type="text" v-model="obj.name">
+        <p>深度监听：{{obj.name}}</p>
+    </div>
+
+    <script>
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                firstName: '吴',
+                lasttName: '慧',
+                fullName: '',
+                // 对象的监听要使用深度监听
+                obj: {
+                    name: 'jack',
+                    age: 18
+                }
+            },
+            // 创建侦听器通过 watch 关键字，它是一个对象
+            watch: { 
+                // watch 中的函数方法名很特殊，它是你要监听的 data 中的数据的名字
+                firstName (newVal, oldVal) {
+                    console.log(newVal, oldVal, '---')
+                    this.fullName = newVal + this.lasttName
+                },
+                lasttName (newVal, oldVal) {
+                    console.log(newVal, oldVal, '---')                    
+                    this.fullName = this.firstName + newVal
+                },
+                // 深度监听
+                obj: {
+                    // 深度监听的对象，对象中的函数方法必须是 handle 这个函数名
+                    handler (newVal) {
+                        console.log('深度监听')
+                        this.obj.name = newVal.name
+                    },
+                    deep: true, // 深度监听
+                }
+            },
+            // 注意：在开发的时候，能够用 computed 实现就有 computed 实现，因为 computed 有缓存作用，提高性能
+            // 在需要执行异步请求操作的时候，就必须要用到 watch 侦听器
+
+            mounted () {
+                this.fullName = this.firstName + this.lasttName
+            }
+        })
+
+    </script>
+</body>
+</html>

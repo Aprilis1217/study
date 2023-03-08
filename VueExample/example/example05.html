@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue 中的 slot 内置组件</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue 中的 slot 内置组件</h1>
+    <!-- 
+        1. 在 HTML 的组件中用 slot 属性传值
+        2. 在组件的模板中用标签接收值
+        3. slot 分发的内容,作用域是在父组件上的.
+     -->
+    <a href="https://blog.csdn.net/zhouzuoluo/article/details/80536754" target="_blank">Vue中slot的使用（通俗易懂）</a>
+    <hr>
+    <div id="app">
+        {{message}}
+        <jspang>
+            <!-- 在 HTML 的组件中用 slot 属性传值 -->
+            <span slot="bolgUrl">{{jspangData.bolgUrl}}</span>
+            <span slot="netName">{{jspangData.netName}}</span>
+            <!-- <span slot="skill">{{jspangData.skill}}</span> -->
+            <span slot="skill">全栈工程师</span>
+        </jspang>
+    </div>
+    <!-- 声明的 template 模板 -->
+    <template id="temp">
+        <div class="slot">
+            <!-- 在组件的模板中用标签接收值，其中 name 属性的值就是 HTML 的组件中 slot 的属性值 -->
+            <p>博客地址：<slot name="bolgUrl"></slot></p>
+            <p>网名：<slot name="netName"></slot></p>
+            <p>技术类型：<slot name="skill"></slot></p>
+        </div>    
+    </template>   
+    <script>
+        let jspang = {
+            template: '#temp'
+        }
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World',
+                jspangData: {
+                    bolgUrl: 'http://jspang.com',
+                    netName: '技术胖',
+                    skill: 'Web前端'
+                }
+            },
+            // 定义一个局部组件
+            components: {
+                'jspang': jspang
+            }
+        })
+    </script>
+</body>
+</html>

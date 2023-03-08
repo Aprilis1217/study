@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简单模拟 Vue 中数据检测</title>
+</head>
+<body>
+  <!-- 多层级对象不适用 -->
+  <script>
+    let data = {
+      name: '阿柳',
+      age: 18,
+      sex: '女'
+    }
+    // 创建一个监视的实例对象，用于监视 data 中属性的变化
+    function Observer (obj) {
+      // 遍历对象，将其属性形成一个数组
+      let keys = Object.keys(obj)
+      // 遍历属性数组
+      keys.forEach(key => {
+        // 利用 Object.defineProperty() 方法
+        Object.defineProperty(this, key, { // this ---> 实例对象
+          get () {
+            return obj[key]
+          },
+          set (val) {
+            console.log(`${key}被修改了，vue 解析模板，生成虚拟 DOM...`)
+            obj[key] = val
+          }
+        })
+      })
+    }
+    const obs = new Observer(data)
+    console.log('obs实例对象：', obs)
+    // 准备一个 vm 实例对象
+    let vm = {}
+    vm._data = data = obs
+    console.log('vm 对象：', vm)
+  </script>
+</body>
+</html>

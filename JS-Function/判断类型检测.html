@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /**
+     * 基本数据类型：基本类型值指的是存储在栈中的一些简单的数据段，基本类型是按值访问的，从一个变量复制基本类型的值到另一个变量后这两个变量的值是完全独立的，互不影响。
+    */
+    // 1.判断是否是 Number 类型
+    function isNumber (val) {
+      let type = typeof val
+      // Object.prototype.toString.call(val) 用来判断 new Number(1217) 的数据类型的
+      return type === 'number' || Object.prototype.toString.call(val) === '[object Number]'
+    }
+
+    // 2.判断是否是 String 类型
+    function isString (val) {
+      let type = typeof val
+      return type === 'string' || Object.prototype.toString.call(val) === '[object String]'
+    }
+
+    // 3.判断是否是 Boolean 类型
+    function isBoolean (val) {
+      let type = typeof val
+      return type === 'boolean' || Object.prototype.toString.call(val) === '[object Boolean]'
+    }
+
+    // 4.判断是否是 Symbol 类型(独一无二的值, 不能使用 new 来声明，否则报错)
+    function isSymbol (val) {
+      let type = typeof val
+      return type === 'symbol' || Object.prototype.toString.call(val) === '[object Symbol]'
+    }
+
+    // 5.判断是否是 Undefined 类型
+    function isUndefined (val) {
+      return val === undefined
+    }
+
+    // 6.判断是否是 Null 类型
+    function isNull (val) {
+      return val === null
+    }
+
+    /**
+     * 引用数据类型
+     * 引用类型的值（对象）是引用类型的一个实例。它是保存在堆内存中的一个对象，引用类型是一种数据结构。
+     * 在ECMAScript 中，引用类型是一种数据结构，用于将数据和功能组织在一起。具体的有 Object 、Array、Date、Error、RegExp、Function，还有ES2015 引入 Set、Map、WeakSet、WeakMap
+    */
+    // 1.判断是否是 Object 类型
+    function isObject (val) {
+      let type = typeof val
+      return type !== null && (type === 'object' || type === 'function')
+    }
+
+    // 2.判断是否是 Function 构造函数
+    function isFuncton (val) {
+      if (!isObject(val)) {
+        return false
+      }
+      return Object.prototype.toString.call(val) === '[object Function]' || Object.prototype.toString.call(val) === '[object AsyncFunction]' || Object.prototype.toString.call(val) === '[object GeneratorFunction]' || Object.prototype.toString.call(val) === '[object Proxy]'
+    }
+
+    // 3.判断是否是 Array 类型
+    // 两种方式：
+    // Array.isArray(val)
+    // Object.prototype.toString.call(val) === '[object Array]'
+
+  </script>
+</body>
+</html>

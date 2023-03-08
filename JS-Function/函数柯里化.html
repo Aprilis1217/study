@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 普通 add 函数
+    function add (x, y) {
+      return x + y
+    }
+    // 函数柯里化 currying
+    function curryingAdd (x) {
+      return function (y) {
+        return x + y
+      }
+    }
+    add(1, 2)
+    curryingAdd(1)(2)
+
+    // 解释：实际上就是把 add 函数的 x, y 两个参数变成了先用一个函数接收 x 然后返回一个函数去处理 y 参数
+    // 就是只传递给函数一部分参数来调用它，让它返回一个函数去处理剩下的参数
+    // 参数复用 ---> 提前确认 ---> 延迟执行
+    function curryingFn (fn, arg = []) {
+      console.log('1---', [...arguments])
+      return function () {
+        console.log('2---', [...arguments])
+        console.log('3---', [...arguments])
+        let rest = [...arg, ...arguments]
+        if (rest.length < fn.length) {
+          return curryingFn.call(this, fn, rest)
+        } else {
+          fn.apply(this, rest)
+        }
+      }
+    }
+    function test (a, b, c) {
+      return a + b + c
+    }
+    let sunFn = curryingFn(test)
+    console.log(sunFn(1)(2)(3))
+
+    // 问如何改造，才能实现打印0 1 2 3，闭包可以吗，然后用闭包实现一下这个效果
+    for (let i = 0; i < 4; i++) {
+      console.log(i, 'iiiii')
+    }
+    // 利用闭包实现
+    for (var i = 0; i < 4; i++) {
+      ((j) => {
+        setTimeout(() => {
+          console.log(j, 'jjjjj')
+        }, 100)
+      })(i)
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PropsData option</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>PropsData option</h1>
+    <hr>
+    <fengyi></fengyi>  
+
+    <script>
+        // 定义一个扩展实例构造器
+        let feng = Vue.extend({
+            template: `<p>{{message}}-----{{huibao}}</p>`,
+            data() {
+                return {
+                    message: 'I am FengYi'
+                }
+            },
+            // 利用 props 来接受传过来的值
+            props: ['huibao']
+        })
+        // 挂载 fengyi 标签
+        // 利用 propsData 传值
+        new feng({propsData: {huibao: 1217}}).$mount('fengyi');
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <!-- 
+        ### 使用 v-for 渲染数组和对象
+        v-for 能够根据data中数据的变化自动刷新视图
+
+        1. v-for 渲染数组
+         + 在标签的属性位置写上 v-for="item in arr" 其中 item 表示数组中的每一项，arr 表示需要遍历的数组
+         + 在标签的属性位置写上 v-for="(item, index) in arr" 其中 index 表示数组的索引值
+        
+        2. v-for 渲染对象
+         + 在标签的属性位置写上 v-for="value in obj" 其中 value 表示对象键的值，obj 表示需要遍历的对象
+         + 在标签的属性位置写上 v-for="(value, key, index) in obj" 其中 key 表示对象的键，index是索引值
+     -->
+     <!-- 
+         注意，以下两种情况不会触发视图更新:
+            1. 当使用数组的 length 属性去改变数组的时候，不会触发视图更新
+            在控制台 vm.user.length = 0; 
+            2. 使用数组下标的方式去改变数组的时候，也不会触发视图更新
+            在控制台 vm.user[0] = {name: 'aaa', age: 111}
+        解决上述问题: 
+            1. 使用 Vue.set(arr, index, newVal)  arr是需要改变的数组，index是数组的索引，newVal是改变后的值
+            2. Array.prototype.splice()
+        
+        注意点: v-for 必须结合 key 属性来使用，它会唯一标识数组中的每一项，未来当数组中的哪一项改变的时候，它只会更新那一项，好处就是提升性能。`注意 key 的值唯一，不能重复
+      -->
+    <div v-for="(item, index) in list" :key="index">
+        <!-- :key 需要绑定一个唯一值，绑定key属性可以提升 v-for 渲染效率 -->
+        <!-- 假设 list 是数组
+            {{item}}   item 是数组中的每一项
+            {{index}}  index 是对应项的索引值
+        -->
+        <!-- 假设 list 是一个对象
+            {{item}}   item 是对应项的属性值(value)
+            {{index}}  index是对应项的属性名(key)
+        -->
+    </div>
+    <div id="app">
+        <!-- 利用 v-for 遍历数组 -->
+        <h3>v-for="item in arr"</h3>
+        <p v-for="item in user" :key="item.name">{{item.name}}---{{item.age}}</p>
+        <hr>
+        <h3>v-for="(item, index) in arr"</h3>
+        <p v-for="(item, index) in user" :key="item.index">{{item.name}}---{{item.age}} 索引: {{index}}</p>
+        <hr>
+        <!-- 利用 v-for 遍历对象 -->
+        <h3>v-for="value in obj"</h3>
+        <p v-for="value in love" :key="value">{{value}}</p>
+        <hr>
+        <h3>v-for="(value, key, index) in obj"</h3>
+        <p v-for="(value, key, index) in love" :key="index">{{key}}: {{value}}---{{index}}</p>
+    </div>
+
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data:{
+                user: [
+                    {name: 'jack', age: 21},
+                    {name: 'rose', age: 18}
+                ],
+                love: {
+                    name: 'huibao',
+                    age: 25
+                }
+            }
+        });
+    </script>
+</body>
+</html>

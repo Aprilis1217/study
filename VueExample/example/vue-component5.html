@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Component 动态创建组件</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Component 动态创建组件</h1>
+    <hr>
+    <div id="app">
+        <!-- {{message}} -->
+        <component :is="componentId"></component>
+        <p><button @click="changeCom">变换组件</button></p>
+    </div>
+
+    <script>
+        let componentA = {
+            template: `<p style="color: red">I'am componentA组件</p>`
+        }
+        let componentB = {
+            template: `<p style="color: green">I'am componentB组件</p>`
+        }
+        let componentC = {
+            template: `<p style="color: blue">I'am componentC组件</p>`
+        }
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello World',
+                componentId: 'conpomentA'
+            },
+            components: {
+                'conpomentA': componentA,
+                'conpomentB': componentB,
+                'conpomentC': componentC,
+            },
+            methods: {
+                changeCom () {
+                    if (this.componentId === 'conpomentA') {
+                        this.componentId = 'conpomentB'
+                    } else if (this.componentId === 'conpomentB') {
+                        this.componentId = 'conpomentC'
+                    } else {
+                        this.componentId = 'conpomentA'
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>

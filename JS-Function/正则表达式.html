@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 正则表达式的创建方式
+        // 1. 字面量创建方式
+        // var reg1 = /pattern/flags;
+        // 2. 实例创建方式
+        // var reg2 = new RegExp(pattern, flags);
+        /**
+         * pattern: 正则表达式
+         * flags: 标识(修饰符)
+         * 标识主要包括：
+         * 1. i 忽略大小写
+         * 2. m 多行匹配，即在到达一行文字末尾时还会继续虚招下一行中是否与正则匹配的项
+         * 3. g 全局匹配，模式应用于所有字符串，而非在找到第一个匹配时停止
+        */
+        // 字面量创建方式和构造函数创建方式的区别：
+        // 1. 字面量创建方式不能进行字符串拼接，实力创建方式可以
+        // 2. 字面量创建方式特殊含义的字符不需要转义，实例创建方式需要转义
+
+        // () 的提高优先级功能：凡是有竖线出现的时候，一定要注意是否有必要加上 () 来提高优先级
+
+        // 正则表达式
+        /**
+         * \d: 0-9之间任意一个数字   /\d/ = /[0-9]/
+         * \D: 匹配一个非字数字符    /\D/ = /[^0-9]/
+         * \w: 数字 0-9、字母 a-z A-Z、下划线 _  /\w/ = /[a-zA-Z0-9]/
+         * \W: 任何非单字字符   /\W/ = /[^a-zA-Z0-9]/
+         * \s: 任何空白符   /\s/ = /[\t\n\r\f\v]/
+         * \S: 任何非空白符  /\S/ = /[^\t\n\r\f\v]/
+         * \t: 制表符
+         * \n: 换行符
+         * \r: 回车
+         * \f: 换页符
+         * \v: 垂直制表符
+         * ^ : 限定开始的位置，本身不占位置
+         * (): 分组
+         * \: 转义字符
+         * $: 限定结束的位置，本身不占位置
+         * |: 或者
+        */
+        
+        // 代表次数的两次元字符
+        /**
+         * *: 0 到多个
+         * +: 1 到多个
+         * ?: 0 次或 1 次，可有可无
+         * {n}: 正好 n 次
+         * {n, }: n 到多次
+         * {n, m}: n 次到 m 此
+        */
+        // 正则的特性：贪婪性和懒惰性
+        let reg1 = /\d+/
+        let reg2 = /\d+?/g;
+        let str = '123aaa456';
+        let res = str.match(reg2);
+        console.log(res); // ["1", "2", "3", "4", "5", "6"]
+        console.log(reg1.exec(str)) // ["123", index: 0, input: "123aaa456", groups: undefined]
+        // 和正则相关的一些方法
+        // 1. reg.test(str) 用来验证字符串是否符合正则，符合返回 true，否则返回 false
+        // 2. reg.exec(str) 用来捕获符合规则的字符串
+        // 3. str.match(reg) 如果匹配成功，就返回匹配成功的数组，否则返回 null
+
+
+        // 给定字符串 str，检查其是否包含连续重复的字母（a-zA-Z），包含返回 true，否则返回 false
+        function containsRepeatingLetter (str) {
+            // 在正则表达式中，利用 () 进行分组，使用斜杠加数字表示引用
+            //    \1 就是引用第一个分组    \2 就是引用第二个分组
+            // 将 [a-zA-Z] 作为一个分组，然后引用，就可以判断是否有连续重复的字母
+            return /([a-zA-Z])\1/.test(str);
+        }
+        console.log(containsRepeatingLetter('litter'))
+
+        // 给定字符串 str，检查其是否包含 连续3个数字 
+        // 1、如果包含，返回最新出现的 3 个数字的字符串
+        // 2、如果不包含，返回 false
+        function captureThreeNumbers (str) {
+            var arr = str.match(/\d{3}/);
+            return (arr && arr[0]) || false;
+        }
+
+        // 给定字符串 str，检查其是否符合美元书写格式
+        // 1、以 $ 开始
+        // 2、整数部分，从个位起，满 3 个数字用 , 分隔
+        // 3、如果为小数，则小数部分长度为 2
+        // 4、正确的格式如：$1,023,032.03 或者 $2.03，错误的格式如：$3,432,12.12 或者 $34,344.3
+        function isUSD (str) {
+            let reg = /^\$\d{1,3}(,\d{3})*(\.\d{2})?$/;
+            return reg.test(str);
+        }
+        console.log(isUSD('$20,933,209.93'))
+    </script>
+</body>
+</html>

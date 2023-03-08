@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mixins 混入选项操作</title>
+    <script src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Mixins 混入选项操作</h1>
+    <!-- 
+        Mixins 混入一般两种用途：
+            1. 在你已经写好了构造器后，需要增加方法或者临时活动时使用的方法，这时混入会减少源代码的污染
+            2. 很多地方都会用到公用方法，用混入的方法可以减少代码量，实现代码重用
+     -->
+    <hr>
+    <div id="app">
+        <p>{{num}}</p>
+        <p><button @click="add">增加</button></p>
+    </div>
+
+    <script>
+        // 额外临时加入
+        let addLog = {
+            updated() { // 同样是 vue 的生命周期钩子函数
+                console.log('mixins 混入数据发生变化' + this.num)
+            }
+        }
+        // 全局混入
+        Vue.mixin({
+            updated() {
+                console.log('全局混入数据')   
+            }
+        })
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            data: {
+                num: 1
+            },
+            methods: {
+                add () {
+                    this.num++
+                }
+            },
+            created() {
+                console.log('最先执行 created 生命周期钩子函数吗？')
+            },
+            // 局部的混入
+            mixins: [addLog],
+            // 原生的 updated 钩子函数
+            updated () {
+                console.log('原生的 updated 数据发生变化' + this.num)
+            }
+        })
+        // mixins 的调用顺序: 在 Vue 中，全局混入最先执行，再是混入后执行，最后是原生构造器里的执行
+        // 需要注意的是这并不是方法的覆盖，而是被执行了两边；当混入的方法和构造器的方法重名时，混入的方法无法展现，也就不起作用
+        
+    </script>
+</body>
+</html>

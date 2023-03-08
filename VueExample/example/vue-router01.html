@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue-Router 初步体验</title>
+    <script src="../assets/js/vue.js"></script>
+    <!-- 1. 引入路由文件 -->
+    <script src="../assets/js/vue-router.js"></script>
+</head>
+<body>
+    <h1>Vue-Router 初步体验</h1>
+    <!-- 使用 router-link 组件来导航跳转 -->
+    <!-- 通过 to 属性指定跳转的路径 -->
+    <!-- router-link 标签会被渲染成一个 a 标签 -->
+    <hr>
+    <div id="app">
+        {{message}}
+        <ul>
+            <li><router-link to="/foo">Foo</router-link></li>
+            <li><router-link to="/bar">Bar</router-link></li>
+        </ul>
+        <!-- 6. 通过 router-view 挖坑，将路径匹配到的组件渲染到这个坑里面 -->
+        <router-view></router-view>
+
+        <hr />
+        <h3>vue-router 有哪几种导航守卫？</h3>
+        <ol>
+            <li>全局守卫</li>
+            <li>路由独享守卫</li>
+            <li>路由组件内的守卫</li>
+        </ol>
+        <p style="color: brown;">全局守卫</p>
+        <ul style="color: brown;">
+            <li>router.beforeEach 全局前置守卫-----进入路由之前</li>
+            <li>router.beforeResolve 全局解析守卫（2.5.0+）在 beforeRouteEnter 调用之后调用</li>
+            <li>router.afterEach 全局后置钩子-----进入路由之后</li>
+            <script>
+                // main.js 入口文件
+                import router from './router' // 引入路由
+                router.beforeEach((to, from, next) => {
+                    // to 即将要进入的目标 路由对象
+                    // from 当前导航正要离开的路由
+                    // next()  一定要调用该方法来 resolve 这个钩子
+                })
+                router.beforeResolve((to, from, next) => {
+                    next()
+                })
+                router.afterEach((to, from) => {
+                    console.log('afterEach 全局后置钩子')
+                })
+            </script>
+        </ul>
+        
+    </div>
+
+    <script>
+        // 2. 定义路由需要的组件
+        const Foo = Vue.component('foo', {
+            template: `<p>首页</p>`
+        })
+        const Bar = Vue.component('bar', {
+            template: `<p>导航</p>`
+        })
+        // 3. 创建路由对象，在这个路由对象里面配置路由规则
+        let router = new VueRouter({
+            // 4. 通过 routes 属性配置路由规则
+            routes: [
+                {
+                    path: '/foo',
+                    name: 'Foo', 
+                    component: Foo
+                },
+                {
+                    path: '/bar',
+                    name: 'Bar',
+                    component: Bar
+                }
+            ]
+        })
+        // 生成一个 Vue 实例
+        let app = new Vue({
+            el: '#app',
+            // 5. 在 vue 实例中注入路由
+            // router: router,
+            router,
+            data: {
+                message: 'Hello World'
+            }
+        })
+    </script>
+</body>
+</html>

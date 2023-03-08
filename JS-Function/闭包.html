@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <p id="help">Helpful notes will appear here</p>
+  <p>E-mail: <input type="text" id="email" name="email"></p>
+  <p>Name: <input type="text" id="name" name="name"></p>
+  <p>Age: <input type="text" id="age" name="age"></p>
+  <!--
+    1. 闭包只能取得包含函数中任何变量的最后一个值，因为别忘了闭包所保存的是整个变量对象，而不是某个特殊的变量
+    2. 在确定绝对需要的地方才使用闭包。因为闭包导致变量不会被垃圾机制回收处理，可能会导致内存泄漏
+  -->
+  <script>
+    /**
+     * 在循环找那个创建闭包的一个常见错误
+     * 重点注意：闭包只能取得包含函数中任何变量的最后一个值。因为别忘了闭包所保存的是整个变量对象，而不是某个特殊的变量
+    */
+    // 数组 helpText 中定义了三个有用的提示信息，每一个都关联对应的文档中的 input 的 ID。通过循环数组，依次为相应 input 添加了一个 onfocus 事件处理函数
+    function showHelp (help) {
+      document.getElementById('help').innerHTML = help
+    }
+    /*
+    function setupHelp () {
+      const helpText = [
+        {'id': 'email', 'help': 'Your e-mail address'},
+        {'id': 'name', 'help': 'Your full name'},
+        {'id': 'age', 'help': 'Your age (you must be over 16)'}
+      ]
+      for (var i = 0; i < helpText.length; i++) {
+        // 这是因为变量 item 使用 var 进行声明，由于变量提升，所以具有函数作用域
+        var item = helpText[i]
+        console.log(item)
+        document.getElementById(item.id).onfocus = function () { // 闭包函数
+          showHelp(item.help)
+        }
+      }
+    }
+    setupHelp() // 运行这段代码后，您会发现它没有达到想要的效果。无论焦点在哪个input上，显示的都是关于年龄的信息。
+    */
+    // 闭包只能取得包含函数中任何变量的最后一个值。因为别忘了闭包所保存的是整个变量对象，而不是某个特殊的变
+
+    // 解决以上问题
+    // 匿名闭包
+    function setupHelp () {
+      const helpText = [
+        {'id': 'email', 'help': 'Your e-mail address'},
+        {'id': 'name', 'help': 'Your full name'},
+        {'id': 'age', 'help': 'Your age (you must be over 16)'}
+      ]
+      for (let i = 0; i < helpText.length; i++) {
+        (() => {
+          var item = helpText[i]
+          document.getElementById(item.id).onfocus = () => {
+            showHelp(item.help)
+          }
+        })()
+      }
+    }
+    setupHelp()
+
+    // 利用 let 关键字存在块级作用域
+    // 将 var item = helpText[i] 改为 let item = helpText[i]
+  </script>
+</body>
+</html>
+
+<script>
+  /**
+   * 闭包的作用：
+   * 可以在函数的外部访问导函数内部的局部变量
+   * 让这些变量始终保存在内存中，不会随着函数的结束而自动销毁
+  */
+
+  /**
+   * 什么是闭包？
+   * JavaScript高级程序设计（第3版）中的描述：闭包是指有权访问另一个函数作用域中的变量的函数
+   *
+   * 我的理解：闭包是可以访问另一个函数作用域中的变量的函数，而被访问的变量可以和函数一同存在。即使另一个函数已经运行结束导致创建变量的环境销毁，也会依然存在，知道访问变量的那个函数被销毁
+  */
+  function add () {
+    let sum = 0
+    return () => sum = sum ? sum + 1 : 1
+  }
+  let aaa = add()
+  console.log(aaa()) // 1
+  console.log(aaa()) // 2
+  console.log(aaa()) // 3
+
+  aaa = null
+  aaa = add()
+  console.log(aaa()) // 1
+
+
+
+  // 定义了 makeAdder(x) 函数，它接受一个参数 x，并返回一个新的函数。
+  // 返回的函数接受一个参数 y，并返回 x + y
+  // 从本质上讲，makeAdder 是一个函数工厂，它创建了将指定的值和它的形参相加求和的函数
+  function makeAdder (x) {
+    return (y) => x + y
+  }
+  let add5 = makeAdder(5)
+  let add10 = makeAdder(10)
+  console.log(add5(1)) // 6
+  console.log(add10(1)) // 11
+  // add5 和 add10 都是闭包，它们共享相同的函数定义，但是保存了不同的词法环境。在 add5 的环境中，x 为 5，而在 add10 中，x 为 10
+  
+</script>
